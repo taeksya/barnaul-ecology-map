@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet.photon.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+
+        .map-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid #3498db;
+            text-align: center;
+            max-width: 80%;
+            backdrop-filter: blur(5px);
+        }
+        
+
+        .legend-container {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            height: calc(100% - 100px);
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            border: 2px solid #2ecc71;
+            width: 320px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+
+        .leaflet-control-layers {
+            display: none !important;
+        }
+        
+        .legend-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .legend-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .legend-section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+        
+        .legend-item {
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .legend-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .legend-color {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            margin-right: 15px;
+            vertical-align: middle;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            flex-shrink: 0;
+        }
+        
+        .legend-img {
+            width: 32px;
+            height: 32px;
+            margin-right: 15px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        
+        .legend-text {
+            font-size: 18px;
+            line-height: 1.4;
+        }
+        
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            border: 2px solid #3498db;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .leaflet-popup-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            max-width: 450px !important;
+            max-height: 500px !important;
+            overflow-y: auto !important;
+            padding: 5px;
+        }
+        
+        .leaflet-popup-scrolled {
+            max-height: 500px;
+        }
+        
+        .leaflet-popup-close-button {
+            font-size: 20px !important;
+            padding: 8px 12px !important;
+            color: #e74c3c !important;
+            transition: color 0.3s ease;
+        }
+        
+        .leaflet-popup-close-button:hover {
+            color: #c0392b !important;
+            background-color: transparent !important;
+        }
+        
+        .custom-popup-content {
+            padding: 10px;
+        }
+        
+        .attribute-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .attribute-title {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .attribute-value {
+            color: #34495e;
+            font-size: 17px;
+            line-height: 1.6;
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            word-break: break-word;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .popup-header {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            padding: 15px;
+            margin: -10px -10px 20px -10px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+
+        .leaflet-popup-fixed .leaflet-popup-content-wrapper {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 3px solid #e74c3c;
+        }
+        
+        .leaflet-popup-fixed .popup-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+
+        .leaflet-control-attribution {
+            display: none !important;
+        }
+        
+
+        .legend-container::-webkit-scrollbar,
+        .leaflet-popup-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .legend-container::-webkit-scrollbar-track,
+        .leaflet-popup-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .legend-container::-webkit-scrollbar-thumb,
+        .leaflet-popup-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            border-radius: 4px;
+        }
+        
+        .legend-container::-webkit-scrollbar-thumb:hover,
+        .leaflet-popup-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2980b9, #27ae60);
+        }
+        </style>
+        <title>Интегральная экологическая карта города Барнаула на 2023 год</title>
+    </head>
+    <body>
+
+        <div class="map-title">Интегральная экологическая карта города Барнаула на 2023 год</div>
+        
+
+        <div class="legend-container">
+            <div class="legend-title">Легенда карты</div>
+            
+            <div class="legend-section">
+                <div class="legend-section-title">Границы</div>
+                <div class="legend-item">
+                    <img src="legend/_1.png" class="legend-img" />
+                    <span class="legend-text">Административная граница городского округа</span>
+                </div>
+            </div>
+            
+            <div class="legend-section">
+                <div class="legend-section-title">Интегральный показатель экологической обстановки в городе</div>
+                
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(41,186,152,1.0);"></div>
+                    <span class="legend-text">0 - 4 балла (Отличное состояние)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(171,221,164,1.0);"></div>
+                    <span class="legend-text">4 - 8 баллов (Хорошее состояние)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(255,255,191,1.0);"></div>
+                    <span class="legend-text">8 - 12 баллов (Удовлетворительное)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(253,174,97,1.0);"></div>
+                    <span class="legend-text">12 - 16 баллов (Неудовлетворительное)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(215,25,28,1.0);"></div>
+                    <span class="legend-text">16 - 20 баллов (Критическое состояние)</span>
+                </div>
+            </div>
+            
+            <div class="legend-section">
+                <div class="legend-section-title">Условные обозначения</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #3498db, #2ecc71);"></div>
+                    <span class="legend-text">Всплывающее окно при наведении</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #e74c3c, #c0392b);"></div>
+                    <span class="legend-text">Фиксированное окно при клике</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="map"></div>
+        
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.photon.js"></script>
+        <script src="data/_0.js"></script>
+        <script src="data/_1.js"></script>
+        <script>
+        var highlightLayer;
+        var fixedPopup = null;
+        
+
+        var attributeNamesLayer0 = {
+            'id': 'Идентификатор участка',
+            'NDVI': 'Индекс NDVI (растительность)',
+            'NDTI': 'Индекс NDTI (мутность воды)',
+            'BSI': 'Индекс BSI (оголенная почва)',
+            'highway': 'Влияние автодорог',
+            'SZZ': 'Санитарно-защитная зона',
+            'ndvi_poi': 'Баллы по NDVI',
+            'ndti_poi': 'Баллы по NDTI',
+            'bsi_poi': 'Баллы по BSI',
+            'high_poi': 'Баллы по автодорогам',
+            'szz_poi': 'Баллы по СЗЗ',
+            'sum_poi': 'Суммарный экологический балл'
+        };
+        
+
+        var attributeNamesLayer1 = {
+            'population': 'Численность населения',
+            'name': 'Название территории',
+            'area': 'Площадь территории',
+            'density': 'Плотность населения'
+        };
+        
+
+        function createBeautifulPopup(feature, attributeNames, layerName) {
+            var popupContent = '<div class="custom-popup-content">';
+            
+
+            var popupTitle = layerName === 'layer__0' ? 'Экологические показатели' : 'Административная информация';
+            popupContent += '<div class="popup-header">' + popupTitle + '</div>';
+            
+            var hasData = false;
+            for (var key in feature.properties) {
+                if (feature.properties[key] !== null && feature.properties[key] !== undefined && 
+                    feature.properties[key] !== '' && feature.properties[key] !== 'NULL') {
+                    hasData = true;
+                    break;
+                }
+            }
+            
+            if (!hasData) {
+                popupContent += '<div class="attribute-group">';
+                popupContent += '<div class="attribute-value" style="text-align: center; color: #7f8c8d;">';
+                popupContent += 'Нет данных для отображения';
+                popupContent += '</div>';
+                popupContent += '</div>';
+            } else {
+                for (var key in feature.properties) {
+                    if (feature.properties[key] !== null && feature.properties[key] !== undefined && 
+                        feature.properties[key] !== '' && feature.properties[key] !== 'NULL') {
+                        var value = feature.properties[key];
+                        var displayName = attributeNames[key] || key;
+                        
+
+                        var formattedValue;
+                        if (typeof value === 'number') {
+
+                            formattedValue = Number(value).toFixed(2);
+                        } else {
+                            formattedValue = String(value);
+                        }
+                        
+                        popupContent += '<div class="attribute-group">';
+                        popupContent += '<div class="attribute-title">' + displayName + '</div>';
+                        popupContent += '<div class="attribute-value">' + 
+                            autolinker.link(formattedValue.replace(/'/g, '\'')) + 
+                            '</div>';
+                        popupContent += '</div>';
+                    }
+                }
+            }
+            
+            popupContent += '</div>';
+            return popupContent;
+        }
+        
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            
+
+            if (fixedPopup) {
+                map.closePopup(fixedPopup);
+                fixedPopup = null;
+            }
+            
+            highlightLayer.openPopup();
+        }
+        
+        var map = L.map('map', {
+            zoomControl: false,
+            maxZoom: 20,
+            minZoom: 1
+        });
+        
+        var hash = new L.Hash(map);
+        
+
+        map.attributionControl.setPrefix('');
+        
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        
+        var bounds_group = new L.featureGroup([]);
+        
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        
+        function pop__0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+
+                    if (!layer._popup || !layer._popup._fixed) {
+                        if (typeof layer.closePopup == 'function') {
+                            layer.closePopup();
+                        } else {
+                            layer.eachLayer(function(feature){
+                                feature.closePopup();
+                            });
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+                click: function(e) {
+
+                    if (layer._popup) {
+                        layer._popup._fixed = true;
+                        layer._popup._wrapper.classList.add('leaflet-popup-fixed');
+                        fixedPopup = layer._popup;
+                        
+
+                        var closeButton = layer._popup._container.querySelector('.leaflet-popup-close-button');
+                        if (closeButton) {
+                            closeButton.title = 'Открепить попап (или нажмите Esc)';
+                        }
+                    }
+                }
+            });
+            
+            var popupContent = createBeautifulPopup(feature, attributeNamesLayer0, 'layer__0');
+            var popup = L.popup({
+                maxHeight: 500,
+                className: 'custom-popup',
+                autoPan: true,
+                closeOnClick: false, 
+                autoClose: false 
+            }).setContent(popupContent);
+            
+            layer.bindPopup(popup);
+            
+
+            layer.on('popupclose', function(e) {
+                if (e.popup === fixedPopup) {
+                    fixedPopup = null;
+                }
+                if (e.popup._wrapper) {
+                    e.popup._wrapper.classList.remove('leaflet-popup-fixed');
+                    e.popup._fixed = false;
+                }
+            });
+        }
+
+        function style__0_0(feature) {
+            if (feature.properties['sum_poi'] >= 0.000000 && feature.properties['sum_poi'] <= 4.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(41,186,152,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['sum_poi'] >= 4.000000 && feature.properties['sum_poi'] <= 8.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(171,221,164,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['sum_poi'] >= 8.000000 && feature.properties['sum_poi'] <= 12.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,191,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['sum_poi'] >= 12.000000 && feature.properties['sum_poi'] <= 16.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['sum_poi'] >= 16.000000 && feature.properties['sum_poi'] <= 20.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        
+        map.createPane('pane__0');
+        map.getPane('pane__0').style.zIndex = 400;
+        map.getPane('pane__0').style['mix-blend-mode'] = 'normal';
+        
+        var layer__0 = new L.geoJson(json__0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__0',
+            layerName: 'layer__0',
+            pane: 'pane__0',
+            onEachFeature: pop__0,
+            style: style__0_0,
+        });
+        
+        bounds_group.addLayer(layer__0);
+        map.addLayer(layer__0);
+        
+        function pop__1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    
+                    if (!layer._popup || !layer._popup._fixed) {
+                        if (typeof layer.closePopup == 'function') {
+                            layer.closePopup();
+                        } else {
+                            layer.eachLayer(function(feature){
+                                feature.closePopup();
+                            });
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+                click: function(e) {
+
+                    if (layer._popup) {
+                        layer._popup._fixed = true;
+                        layer._popup._wrapper.classList.add('leaflet-popup-fixed');
+                        fixedPopup = layer._popup;
+                        
+
+                        var closeButton = layer._popup._container.querySelector('.leaflet-popup-close-button');
+                        if (closeButton) {
+                            closeButton.title = 'Открепить попап (или нажмите Esc)';
+                        }
+                    }
+                }
+            });
+            
+            var popupContent = createBeautifulPopup(feature, attributeNamesLayer1, 'layer__1');
+            var popup = L.popup({
+                maxHeight: 500,
+                className: 'custom-popup',
+                autoPan: true,
+                closeOnClick: false, 
+                autoClose: false 
+            }).setContent(popupContent);
+            
+            layer.bindPopup(popup);
+            
+
+            layer.on('popupclose', function(e) {
+                if (e.popup === fixedPopup) {
+                    fixedPopup = null;
+                }
+                if (e.popup._wrapper) {
+                    e.popup._wrapper.classList.remove('leaflet-popup-fixed');
+                    e.popup._fixed = false;
+                }
+            });
+        }
+
+        function style__1_0() {
+            return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(207,69,94,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        
+        map.createPane('pane__1');
+        map.getPane('pane__1').style.zIndex = 401;
+        map.getPane('pane__1').style['mix-blend-mode'] = 'normal';
+        
+        var layer__1 = new L.geoJson(json__1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__1',
+            layerName: 'layer__1',
+            pane: 'pane__1',
+            onEachFeature: pop__1,
+            style: style__1_0,
+        });
+        
+        bounds_group.addLayer(layer__1);
+        map.addLayer(layer__1);
+        
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && fixedPopup) {
+                map.closePopup(fixedPopup);
+                fixedPopup = null;
+            }
+        });
+        
+
+        map.on('click', function(e) {
+            if (fixedPopup && e.originalEvent) {
+                var target = e.originalEvent.target;
+                var isPopup = target.closest('.leaflet-popup');
+                if (!isPopup) {
+                    map.closePopup(fixedPopup);
+                    fixedPopup = null;
+                }
+            }
+        });
+        
+
+        setTimeout(function() {
+            var layersControl = document.querySelector('.leaflet-control-layers');
+            if (layersControl) {
+                layersControl.style.display = 'none';
+            }
+        }, 100);
+        
+        setBounds();
+        </script>        
+    </body>
+</html>

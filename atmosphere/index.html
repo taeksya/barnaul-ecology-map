@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="css/leaflet.photon.css">
+        <style>
+            html, body, #map {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .map-title {
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                background-color: rgba(255, 255, 255, 0.95);
+                padding: 15px 30px;
+                border-radius: 10px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 22px;
+                font-weight: bold;
+                color: #2c3e50;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                border: 2px solid #3498db;
+                text-align: center;
+                max-width: 80%;
+                backdrop-filter: blur(5px);
+            }
+            .legend-container {
+                position: absolute;
+                top: 80px;
+                right: 20px;
+                z-index: 1000;
+                height: calc(100% - 100px);
+                overflow-y: auto;
+                background-color: rgba(255, 255, 255, 0.97);
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+                border: 2px solid #2ecc71;
+                width: 380px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .enterprises-container {
+                position: absolute;
+                top: 80px;
+                left: 20px;
+                z-index: 1000;
+                width: 340px;
+                max-height: calc(100% - 100px);
+                background-color: rgba(255, 255, 255, 0.97);
+                border-radius: 10px;
+                box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+                border: 2px solid #3498db;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                backdrop-filter: blur(5px);
+                transition: all 0.3s ease;
+            }
+            .enterprises-header {
+                background: linear-gradient(135deg, #2c3e50, #3498db);
+                padding: 16px 15px;
+                border-radius: 8px 8px 0 0;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                text-align: center;
+                border-bottom: 2px solid #f1c40f;
+                letter-spacing: 0.5px;
+            }
+            .enterprises-list {
+                flex: 1;
+                overflow-y: auto;
+                padding: 12px 10px;
+                background: #fefefe;
+            }
+            .enterprise-item {
+                padding: 12px 15px;
+                margin-bottom: 10px;
+                background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+                border-left: 5px solid #3498db;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 14px;
+                font-weight: 500;
+                color: #2c3e50;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            }
+            .enterprise-item:hover {
+                background: linear-gradient(135deg, #eef2f7, #e9ecef);
+                transform: translateX(6px);
+                border-left-color: #e74c3c;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+            .enterprise-item strong {
+                color: #2c3e50;
+                font-size: 15px;
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 700;
+            }
+            .enterprise-type {
+                font-size: 12px;
+                color: #7f8c8d;
+                display: inline-block;
+                background: #ecf0f1;
+                padding: 3px 10px;
+                border-radius: 20px;
+                margin-top: 4px;
+                font-weight: normal;
+            }
+            .leaflet-control-layers {
+                display: none !important;
+            }
+            .legend-title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #2c3e50;
+                text-align: center;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 15px;
+            }
+            .legend-section {
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #eee;
+            }
+            .legend-section-title {
+                font-size: 20px;
+                font-weight: 600;
+                margin-bottom: 15px;
+                color: #34495e;
+                cursor: default;
+            }
+            .legend-item {
+                margin-bottom: 12px;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                padding: 6px;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+                cursor: pointer;
+            }
+            .legend-item:hover {
+                background-color: #e8f4fd;
+            }
+            .legend-color {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                margin-right: 12px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                flex-shrink: 0;
+            }
+            .legend-img {
+                width: 24px;
+                height: 24px;
+                margin-right: 12px;
+                flex-shrink: 0;
+                object-fit: contain;
+            }
+            .legend-img-airport {
+                width: 16px;
+                height: 16px;
+                margin-right: 12px;
+                flex-shrink: 0;
+                object-fit: contain;
+            }
+            .legend-dashed-line {
+                display: inline-block;
+                width: 30px;
+                height: 4px;
+                background: repeating-linear-gradient(90deg, #b56a95, #b56a95 8px, transparent 8px, transparent 16px);
+                margin-right: 12px;
+                border-radius: 0;
+            }
+            .legend-text {
+                font-size: 16px;
+                line-height: 1.4;
+            }
+            .legend-table {
+                margin-left: 0px;
+                margin-top: 10px;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .legend-table td {
+                padding: 10px 5px;
+                vertical-align: middle;
+            }
+            .legend-table img {
+                width: 80px;
+                height: 80px;
+                object-fit: contain;
+                transition: transform 0.2s ease;
+                cursor: pointer;
+            }
+            .legend-table img:hover {
+                transform: scale(1.15);
+            }
+            .legend-table td:first-child {
+                width: 60px;
+                text-align: center;
+            }
+            .legend-table td:last-child {
+                font-size: 14px;
+                padding-left: 12px;
+                cursor: pointer;
+            }
+            .legend-table tr {
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                border-radius: 5px;
+            }
+            .legend-table tr:hover {
+                background-color: #e8f4fd;
+            }
+            .leaflet-popup-content-wrapper {
+                border-radius: 10px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+                border: 2px solid #3498db;
+                overflow: hidden;
+                
+            }
+            .leaflet-popup-content {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 13px;
+                max-width: 380px !important;
+                max-height: 350px !important;
+                overflow-y: auto !important;
+                padding: 0;
+                margin: 0;
+            }
+            .custom-popup-content {
+                padding: 8px;
+            }
+            .attribute-group {
+                margin-bottom: 10px;
+                padding: 8px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 6px;
+                border-left: 3px solid #3498db;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            .attribute-title {
+                font-weight: 700;
+                color: #2c3e50;
+                font-size: 13px;
+                margin-bottom: 3px;
+                display: block;
+            }
+            .attribute-value {
+                color: #34495e;
+                font-size: 12px;
+                line-height: 1.6;
+                padding: 10px 15px;
+                background-color: white;
+                border-radius: 6px;
+                border: 1px solid #e0e0e0;
+                word-break: break-word;
+            }
+            .popup-header {
+                background: linear-gradient(135deg, #3498db, #2ecc71);
+                color: white;
+                padding: 8px;
+                margin: -8px -8px 10px -8px;
+                border-radius: 8px 8px 0 0;
+                text-align: center;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            .leaflet-popup-fixed .leaflet-popup-content-wrapper {
+                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+                border: 3px solid #e74c3c;
+            }
+            .leaflet-popup-fixed .popup-header {
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+            }
+            .leaflet-control-attribution {
+                display: none !important;
+            }
+            @media (max-width: 768px) {
+                .enterprises-container {
+                    width: 270px;
+                    top: 70px;
+                    left: 10px;
+                    max-height: calc(100% - 90px);
+                }
+                .legend-container {
+                    width: 260px;
+                    right: 10px;
+                    top: 70px;
+                    padding: 12px;
+                }
+                .map-title {
+                    font-size: 16px;
+                    padding: 8px 15px;
+                    top: 5px;
+                }
+                .enterprise-item {
+                    padding: 8px 12px;
+                }
+                .legend-text {
+                    font-size: 13px;
+                }
+            }
+            /* УВЕЛИЧЕННЫЕ СТИЛИ ДЛЯ ПОДПИСЕЙ */
+            .css_1000_18 { font-family: 'P152', sans-serif; font-weight: bold; font-size: 12pt; color: #1a1a1a; text-shadow: 1px 1px 0 white; }
+            .css_1000_19 { font-family: 'T132', sans-serif; font-weight: bold; font-size: 10pt; color: #1a1a1a; text-shadow: 1px 1px 0 white; }
+            .css__20 { font-family: 'D432', sans-serif; font-style: italic; font-size: 12pt; color: #2c3e50; text-shadow: 1px 1px 0 white; font-weight: bold; }
+            .css__21 { font-family: 'Ch122', sans-serif; font-weight: bold; font-size: 10pt; color: #2c3e50; text-shadow: 1px 1px 0 white; }
+        </style>
+        <title>Карта объектов загрязнителей города Барнаула</title>
+    </head>
+    <body>
+        <div class="map-title">Карта объектов загрязнителей города Барнаула</div>
+        
+        <div class="legend-container" id="legendContainer"></div>
+
+        <div id="enterprisesPanel" class="enterprises-container" style="display: none;">
+            <div class="enterprises-header">Промышленные предприятия Барнаула</div>
+            <div class="enterprises-list" id="enterprisesList"><div style="text-align: center; padding: 20px; color: #7f8c8d;">Загрузка данных...</div></div>
+        </div>
+        
+        <div id="map"></div>
+
+        <script>
+        // Игнорируем ошибки source map
+        window.addEventListener('error', function(e) {
+            if (e.message && (e.message.includes('source map') || e.message.includes('L.Mixin.Events'))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        (function() {
+            var origWarn = console.warn;
+            console.warn = function() {
+                if (arguments[0] && typeof arguments[0] === 'string' && (arguments[0].indexOf('L.Mixin.Events') !== -1 || arguments[0].indexOf('source map') !== -1)) {
+                    return;
+                }
+                origWarn.apply(console, arguments);
+            };
+        })();
+        </script>
+        
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.photon.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        
+        <script src="data/_0.js"></script>
+        <script src="data/_1.js"></script>
+        <script src="data/_2.js"></script>
+        <script src="data/_3.js"></script>
+        <script src="data/_4.js"></script>
+        <script src="data/_5.js"></script>
+        <script src="data/_6.js"></script>
+        <script src="data/_7.js"></script>
+        <script src="data/_8.js"></script>
+        <script src="data/_9.js"></script>
+        <script src="data/_10.js"></script>
+        <script src="data/_11.js"></script>
+        <script src="data/_12.js"></script>
+        <script src="data/_13.js"></script>
+        <script src="data/_14.js"></script>
+        <script src="data/_15.js"></script>
+        <script src="data/_16.js"></script>
+        <script src="data/_17.js"></script>
+        <script src="data/_18.js"></script>
+        <script src="data/_19.js"></script>
+        <script src="data/1000_20.js"></script>
+        <script src="data/1000_21.js"></script>
+        <script src="data/_22.js"></script>
+        <script src="data/_23.js"></script>
+        <script src="data/_24.js"></script>
+        <script src="data/_25.js"></script>
+        <script src="data/_26.js"></script>
+        <script src="data/_27.js"></script>
+        <script src="data/_28.js"></script>
+        <script src="data/_29.js"></script>
+        <script src="data/_30.js"></script>
+        <script src="data/_31.js"></script>
+        <script src="data/_32.js"></script>
+        <script src="data/_33.js"></script>
+        <script src="data/_34.js"></script>
+        <script src="data/_35.js"></script>
+        <script src="data/_36.js"></script>
+        <script src="data/_37.js"></script>
+        <script src="data/_38.js"></script>
+        <script src="data/_39.js"></script>
+        
+        <script>
+        var highlightLayer;
+        var fixedPopup = null;
+        var map;
+        var autolinker;
+        var allLayers = {};
+        var layerVisibility = {};
+        
+        // ========== СОЗДАНИЕ КАРТЫ ==========
+        map = L.map('map', { zoomControl: false, maxZoom: 20, minZoom: 1 });
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        autolinker = new Autolinker({ truncate: { length: 30, location: 'smart' } });
+        var zoomControl = L.control.zoom({ position: 'topleft' }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() { if (bounds_group.getLayers().length) { map.fitBounds(bounds_group.getBounds()); } }
+        
+        // ========== ПАНЕЛИ (PANE) ==========
+        for (var i = 0; i <= 40; i++) { 
+            map.createPane('pane__' + i); 
+            if (map.getPane('pane__' + i)) { 
+                map.getPane('pane__' + i).style.zIndex = 400 + i; 
+                map.getPane('pane__' + i).style['mix-blend-mode'] = 'normal'; 
+            } 
+        }
+        
+        // ========== ПАТТЕРНЫ ==========
+        var pattern__5_0 = new L.StripePattern({ weight: 0.6, spaceWeight: 5.0, color: '#fddc43', opacity: 1.0, spaceOpacity: 0, angle: 315 });
+        pattern__5_0.addTo(map);
+        var pattern__14_0 = new L.StripePattern({ weight: 0.3, spaceWeight: 2.0, color: '#860e00', opacity: 1.0, spaceOpacity: 0, angle: 225 });
+        pattern__14_0.addTo(map);
+        
+        // ========== ФУНКЦИИ ПОПАПОВ ==========
+        function createBeautifulPopup(feature, layerName) {
+            var popupContent = '<div class="custom-popup-content">';
+            var popupTitle = 'Информация об объекте';
+            
+            if (layerName.includes('layer__24')) popupTitle = 'Промышленный объект';
+            else if (layerName.includes('layer__25')) popupTitle = 'Международный аэропорт';
+            else if (layerName.includes('layer__26')) popupTitle = 'Энергетика';
+            else if (layerName.includes('layer__27')) popupTitle = 'Химическая промышленность';
+            else if (layerName.includes('layer__28')) popupTitle = 'Фармацевтика';
+            else if (layerName.includes('layer__29')) popupTitle = 'Сбор отходов';
+            else if (layerName.includes('layer__30')) popupTitle = 'Стройматериалы';
+            else if (layerName.includes('layer__31')) popupTitle = 'Деревообработка';
+            else if (layerName.includes('layer__32')) popupTitle = 'Пищевая промышленность';
+            else if (layerName.includes('layer__33')) popupTitle = 'Нефтехранилище';
+            else if (layerName.includes('layer__34')) popupTitle = 'Машиностроение';
+            else if (layerName.includes('layer__35')) popupTitle = 'Легкая промышленность';
+            else if (layerName.includes('layer__36')) popupTitle = 'Добывающая промышленность';
+            else if (layerName.includes('layer__37')) popupTitle = 'Водоснабжение';
+            else if (layerName.includes('layer__38')) popupTitle = 'Граница района города';
+            else if (layerName.includes('layer__39')) popupTitle = 'Граница городского округа';
+            else if (layerName.includes('layer__12')) popupTitle = 'Земли населенных пунктов';
+            else if (layerName.includes('layer__11')) popupTitle = 'Парки,скверы';
+
+
+            else if (layerName.includes('layer__0')) popupTitle = 'Земли лесного фонда';
+            else if (layerName.includes('layer__2') || layerName.includes('layer__3') || layerName.includes('layer__4')) popupTitle = 'Рельеф';
+            else if (layerName.includes('layer__5')) popupTitle = 'Особо охраняемые природные территории';
+            else if (layerName.includes('layer__6') || layerName.includes('layer__7') || layerName.includes('layer__8') || layerName.includes('layer__9') || layerName.includes('layer__10')) popupTitle = 'Гидрография';
+            else if (layerName.includes('layer__13')) popupTitle = 'Санитарный разрыв';
+            else if (layerName.includes('layer__14')) popupTitle = 'Санитарно-защитная зона';
+            else if (layerName.includes('layer__15')) popupTitle = 'Железные дороги';
+            else if (layerName.includes('layer__16') || layerName.includes('layer__17') || layerName.includes('layer__18') || layerName.includes('layer__19')) popupTitle = 'Автомобильные дороги';
+            else if (layerName.includes('layer__1')) popupTitle = 'Земли сельскохозяйственного назначения';
+
+            popupContent += '<div class="popup-header">' + popupTitle + '</div>';
+            
+            var hasData = false;
+            for (var key in feature.properties) {
+                if (key === 'landuse') continue;
+                if (feature.properties[key] !== null && feature.properties[key] !== undefined && 
+                    feature.properties[key] !== '' && feature.properties[key] !== 'NULL') {
+                    hasData = true;
+                    break;
+                }
+            }
+            
+            if (!hasData) {
+                popupContent += '<div class="attribute-group"><div class="attribute-value" style="text-align:center;">Нет дополнительных данных</div></div>';
+            } else {
+                for (var key in feature.properties) {
+                    if (key === 'landuse') continue;
+                    if (feature.properties[key] !== null && feature.properties[key] !== undefined && 
+                        feature.properties[key] !== '' && feature.properties[key] !== 'NULL') {
+                        var value = feature.properties[key];
+                        var displayName = key;
+                        var formattedValue = (typeof value === 'number') ? Number(value).toFixed(2) : String(value);
+                        popupContent += '<div class="attribute-group">';
+                        popupContent += '<div class="attribute-title">' + displayName + '</div>';
+                        popupContent += '<div class="attribute-value">' + (autolinker ? autolinker.link(formattedValue) : formattedValue) + '</div>';
+                        popupContent += '</div>';
+                    }
+                }
+            }
+            popupContent += '</div>';
+            return popupContent;
+        }
+        
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            if (fixedPopup) { map.closePopup(fixedPopup); fixedPopup = null; }
+            highlightLayer.openPopup();
+        }
+        
+        function bindPopupEvents(layer, feature, layerId) {
+            var popupContent = createBeautifulPopup(feature, layerId);
+            var popup = L.popup({ maxHeight: 400, className: 'custom-popup', autoPan: true, closeOnClick: false, autoClose: false }).setContent(popupContent);
+            layer.bindPopup(popup);
+            layer.on({
+                mouseout: function(e) { if (!layer._popup || !layer._popup._fixed) { if (typeof layer.closePopup == 'function') layer.closePopup(); } },
+                mouseover: highlightFeature,
+                click: function(e) {
+                    if (layer._popup) {
+                        layer._popup._fixed = true;
+                        layer._popup._wrapper.classList.add('leaflet-popup-fixed');
+                        fixedPopup = layer._popup;
+                        var closeBtn = layer._popup._container.querySelector('.leaflet-popup-close-button');
+                        if (closeBtn) closeBtn.title = 'Закрепить попап (Esc)';
+                    }
+                }
+            });
+            layer.on('popupclose', function(e) {
+                if (e.popup === fixedPopup) fixedPopup = null;
+                if (e.popup._wrapper) { e.popup._wrapper.classList.remove('leaflet-popup-fixed'); e.popup._fixed = false; }
+            });
+        }
+        
+        function pop__0(f,l) { bindPopupEvents(l,f,'layer__0'); }
+        function pop__1(f,l) { bindPopupEvents(l,f,'layer__1'); }
+        function pop__2(f,l) { bindPopupEvents(l,f,'layer__2'); }
+        function pop__3(f,l) { bindPopupEvents(l,f,'layer__3'); }
+        function pop__4(f,l) { bindPopupEvents(l,f,'layer__4'); }
+        function pop__5(f,l) { bindPopupEvents(l,f,'layer__5'); }
+        function pop__6(f,l) { bindPopupEvents(l,f,'layer__6'); }
+        function pop__7(f,l) { bindPopupEvents(l,f,'layer__7'); }
+        function pop__8(f,l) { bindPopupEvents(l,f,'layer__8'); }
+        function pop__9(f,l) { bindPopupEvents(l,f,'layer__9'); }
+        function pop__10(f,l) { bindPopupEvents(l,f,'layer__10'); }
+        function pop__11(f,l) { bindPopupEvents(l,f,'layer__11'); }
+        function pop__12(f,l) { bindPopupEvents(l,f,'layer__12'); }
+        function pop__13(f,l) { bindPopupEvents(l,f,'layer__13'); }
+        function pop__14(f,l) { bindPopupEvents(l,f,'layer__14'); }
+        function pop__15(f,l) { bindPopupEvents(l,f,'layer__15'); }
+        function pop__16(f,l) { bindPopupEvents(l,f,'layer__16'); }
+        function pop__17(f,l) { bindPopupEvents(l,f,'layer__17'); }
+        function pop__18(f,l) { bindPopupEvents(l,f,'layer__18'); }
+        function pop__19(f,l) { bindPopupEvents(l,f,'layer__19'); }
+        function pop_1000_20(f,l) { bindPopupEvents(l,f,'1000_20'); }
+        function pop_1000_21(f,l) { bindPopupEvents(l,f,'1000_21'); }
+        function pop__22(f,l) { bindPopupEvents(l,f,'layer__22'); }
+        function pop__23(f,l) { bindPopupEvents(l,f,'layer__23'); }
+        function pop__24(f,l) { bindPopupEvents(l,f,'layer__24'); }
+        function pop__25(f,l) { bindPopupEvents(l,f,'layer__25'); }
+        function pop__26(f,l) { bindPopupEvents(l,f,'layer__26'); }
+        function pop__27(f,l) { bindPopupEvents(l,f,'layer__27'); }
+        function pop__28(f,l) { bindPopupEvents(l,f,'layer__28'); }
+        function pop__29(f,l) { bindPopupEvents(l,f,'layer__29'); }
+        function pop__30(f,l) { bindPopupEvents(l,f,'layer__30'); }
+        function pop__31(f,l) { bindPopupEvents(l,f,'layer__31'); }
+        function pop__32(f,l) { bindPopupEvents(l,f,'layer__32'); }
+        function pop__33(f,l) { bindPopupEvents(l,f,'layer__33'); }
+        function pop__34(f,l) { bindPopupEvents(l,f,'layer__34'); }
+        function pop__35(f,l) { bindPopupEvents(l,f,'layer__35'); }
+        function pop__36(f,l) { bindPopupEvents(l,f,'layer__36'); }
+        function pop__37(f,l) { bindPopupEvents(l,f,'layer__37'); }
+        function pop__38(f,l) { bindPopupEvents(l,f,'layer__38'); }
+        function pop__39(f,l) { bindPopupEvents(l,f,'layer__39'); }
+
+        // ========== СТИЛИ ==========
+        function style__0_0() { return { pane: 'pane__0', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(168,209,155,1.0)', interactive: true }; }
+        function style__1_0() { return { pane: 'pane__1', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(232,228,173,1.0)', interactive: true }; }
+        function style__2_0() { return { pane: 'pane__2', opacity: 1, color: 'rgba(185,158,129,1.0)', dashArray: '4.0,2.0', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
+        function style__3_0() { return { pane: 'pane__3', opacity: 1, color: 'rgba(185,158,129,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
+        function style__4_0() { return { pane: 'pane__4', opacity: 1, color: 'rgba(185,158,129,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 2.0, fillOpacity: 0, interactive: true }; }
+        function style__5_0() { return { pane: 'pane__5', stroke: false, fillOpacity: 1, fillPattern: pattern__5_0, interactive: true }; }
+        function style__5_1() { return { pane: 'pane__5', opacity: 1, color: 'rgba(253,220,67,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 3.0, fillOpacity: 0, interactive: true }; }
+        function style__6_0() { return { pane: 'pane__6', opacity: 1, color: 'rgba(75,153,187,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
+        function style__7_0() { return { pane: 'pane__7', opacity: 1, color: 'rgba(75,153,187,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
+        function style__8_0() { return { pane: 'pane__8', opacity: 1, color: 'rgba(75,153,187,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(137,190,215,1.0)', interactive: true }; }
+        function style__9_0() { return { pane: 'pane__9', opacity: 1, color: 'rgba(75,153,187,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(137,190,215,1.0)', interactive: true }; }
+        function style__10_0() { return { pane: 'pane__10', opacity: 1, color: 'rgba(75,153,187,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(137,190,215,1.0)', interactive: true }; }
+        function style__11_0() { return { pane: 'pane__11', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(124,173,125,1.0)', interactive: true }; }
+        function style__12_0(feature) {
+            switch(String(feature.properties['landuse'])) {
+                case 'airport': return { pane: 'pane__12', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(186,186,186,1.0)', interactive: true };
+                case 'cemetery': return { pane: 'pane__12', opacity: 1, color: 'rgba(35,35,35,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(255,255,255,1.0)', interactive: true };
+                case 'commercial': return { pane: 'pane__12', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(203,179,200,1.0)', interactive: true };
+                case 'industrial': return { pane: 'pane__12', opacity: 1, color: 'rgba(247,247,247,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(186,186,186,1.0)', interactive: true };
+                case 'residential': return { pane: 'pane__12', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(230,219,212,1.0)', interactive: true };
+                case 'retail': return { pane: 'pane__12', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(203,179,200,1.0)', interactive: true };
+                default: return { pane: 'pane__12', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(186,186,186,1.0)', interactive: true };
+            }
+        }
+        function style__13_0() { return { pane: 'pane__13', opacity: 1, color: 'rgba(247,247,247,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(219,232,239,1.0)', interactive: true }; }
+        function style__14_0() { return { pane: 'pane__14', stroke: false, fillOpacity: 1, fillPattern: pattern__14_0, interactive: true }; }
+        function style__14_1() { return { pane: 'pane__14', opacity: 1, color: 'rgba(134,14,0,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
+        function style__15_0() { return { pane: 'pane__15', opacity: 1, color: 'rgba(35,35,35,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
+        function style__16_0() { return { pane: 'pane__16', opacity: 1, color: 'rgba(0,0,0,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 3.0, fillOpacity: 0, interactive: true }; }
+        function style__16_1() { return { pane: 'pane__16', opacity: 1, color: 'rgba(239,239,239,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 2.0, fillOpacity: 0, interactive: true }; }
+        function style__17_0() { return { pane: 'pane__17', opacity: 1, color: 'rgba(0,0,0,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 3.0, fillOpacity: 0, interactive: true }; }
+        function style__17_1() { return { pane: 'pane__17', opacity: 1, color: 'rgba(239,239,239,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 2.0, fillOpacity: 0, interactive: true }; }
+        function style__18_0() { return { pane: 'pane__18', opacity: 1, color: 'rgba(0,0,0,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 3.0, fillOpacity: 0, interactive: true }; }
+        function style__18_1() { return { pane: 'pane__18', opacity: 1, color: 'rgba(239,176,95,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 2.0, fillOpacity: 0, interactive: true }; }
+        function style__19_0() { return { pane: 'pane__19', opacity: 1, color: 'rgba(0,0,0,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 4.0, fillOpacity: 0, interactive: true }; }
+        function style__19_1() { return { pane: 'pane__19', opacity: 1, color: 'rgba(239,176,95,1.0)', dashArray: '', lineCap: 'round', lineJoin: 'round', weight: 2.0, fillOpacity: 0, interactive: true }; }
+        function style_1000_20_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style_1000_21_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style__22_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style__23_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style__24_0(feature) {
+            switch(String(feature.properties['landuse'])) {
+                case 'quarry': return { pane: 'pane__24', opacity: 1, color: 'rgba(35,35,35,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(147,95,84,1.0)', interactive: true };
+                case 'landfill': return { pane: 'pane__24', opacity: 1, color: 'rgba(35,35,35,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(182,195,240,1.0)', interactive: true };
+                case 'industrial': return { pane: 'pane__24', opacity: 1, color: 'rgba(35,35,35,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(242,213,239,1.0)', interactive: true };
+                default: return { pane: 'pane__24', opacity: 1, color: 'rgba(35,35,35,1.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(242,213,239,1.0)', interactive: true };
+            }
+        }
+        function style__25_0() { return { pane: 'pane__25', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_25.svg', iconSize: [9.12, 9.12] }), interactive: true }; }
+        function style__26_0() { return { pane: 'pane__26', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_26.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__27_0() { return { pane: 'pane__27', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_27.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__28_0() { return { pane: 'pane__28', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_28.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__29_0() { return { pane: 'pane__29', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_29.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__30_0() { return { pane: 'pane__30', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_30.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__31_0() { return { pane: 'pane__31', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_31.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__32_0() { return { pane: 'pane__32', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_32.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__33_0() { return { pane: 'pane__33', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_33.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__34_0() { return { pane: 'pane__34', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_34.svg', iconSize: [61.87464000000001, 61.87464000000001] }), interactive: true }; }
+        function style__35_0() { return { pane: 'pane__35', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_35.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__36_0() { return { pane: 'pane__36', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_36.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__37_0() { return { pane: 'pane__37', rotationAngle: 0.0, rotationOrigin: 'center center', icon: L.icon({ iconUrl: 'markers/_37.svg', iconSize: [60.8, 60.8] }), interactive: true }; }
+        function style__38_0() { return { pane: 'pane__38', opacity: 1, color: 'rgba(180,105,148,1.0)', dashArray: '8.0,4.0', lineCap: 'square', lineJoin: 'bevel', weight: 2.0, fillOpacity: 0, interactive: true }; }
+        function style__39_0() { return { pane: 'pane__39', opacity: 1, color: 'rgba(207,69,94,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 3.0, fillOpacity: 0, interactive: true }; }
+
+        // ========== СОЗДАНИЕ СЛОЁВ ==========
+        var layer__0 = new L.geoJson(json__0, { interactive: true, dataVar: 'json__0', layerName: 'layer__0', pane: 'pane__0', onEachFeature: pop__0, style: style__0_0 });
+        var layer__1 = new L.geoJson(json__1, { interactive: true, dataVar: 'json__1', layerName: 'layer__1', pane: 'pane__1', onEachFeature: pop__1, style: style__1_0 });
+        var layer__2 = new L.geoJson(json__2, { interactive: true, dataVar: 'json__2', layerName: 'layer__2', pane: 'pane__2', onEachFeature: pop__2, style: style__2_0 });
+        var layer__3 = new L.geoJson(json__3, { interactive: true, dataVar: 'json__3', layerName: 'layer__3', pane: 'pane__3', onEachFeature: pop__3, style: style__3_0 });
+        var layer__4 = new L.geoJson(json__4, { interactive: true, dataVar: 'json__4', layerName: 'layer__4', pane: 'pane__4', onEachFeature: pop__4, style: style__4_0 });
+        var layer__5 = new L.geoJson.multiStyle(json__5, { interactive: true, dataVar: 'json__5', layerName: 'layer__5', pane: 'pane__5', onEachFeature: pop__5, styles: [style__5_0, style__5_1] });
+        var layer__6 = new L.geoJson(json__6, { interactive: true, dataVar: 'json__6', layerName: 'layer__6', pane: 'pane__6', onEachFeature: pop__6, style: style__6_0 });
+        var layer__7 = new L.geoJson(json__7, { interactive: true, dataVar: 'json__7', layerName: 'layer__7', pane: 'pane__7', onEachFeature: pop__7, style: style__7_0 });
+        var layer__8 = new L.geoJson(json__8, { interactive: true, dataVar: 'json__8', layerName: 'layer__8', pane: 'pane__8', onEachFeature: pop__8, style: style__8_0 });
+        var layer__9 = new L.geoJson(json__9, { interactive: true, dataVar: 'json__9', layerName: 'layer__9', pane: 'pane__9', onEachFeature: pop__9, style: style__9_0 });
+        var layer__10 = new L.geoJson(json__10, { interactive: true, dataVar: 'json__10', layerName: 'layer__10', pane: 'pane__10', onEachFeature: pop__10, style: style__10_0 });
+        var layer__11 = new L.geoJson(json__11, { interactive: true, dataVar: 'json__11', layerName: 'layer__11', pane: 'pane__11', onEachFeature: pop__11, style: style__11_0 });
+        var layer__12 = new L.geoJson(json__12, { interactive: true, dataVar: 'json__12', layerName: 'layer__12', pane: 'pane__12', onEachFeature: pop__12, style: style__12_0 });
+        var layer__13 = new L.geoJson(json__13, { interactive: true, dataVar: 'json__13', layerName: 'layer__13', pane: 'pane__13', onEachFeature: pop__13, style: style__13_0 });
+        var layer__14 = new L.geoJson.multiStyle(json__14, { interactive: true, dataVar: 'json__14', layerName: 'layer__14', pane: 'pane__14', onEachFeature: pop__14, styles: [style__14_0, style__14_1] });
+        var layer__15 = new L.geoJson(json__15, { interactive: true, dataVar: 'json__15', layerName: 'layer__15', pane: 'pane__15', onEachFeature: pop__15, style: style__15_0 });
+        var layer__16 = new L.geoJson.multiStyle(json__16, { interactive: true, dataVar: 'json__16', layerName: 'layer__16', pane: 'pane__16', onEachFeature: pop__16, styles: [style__16_0, style__16_1] });
+        var layer__17 = new L.geoJson.multiStyle(json__17, { interactive: true, dataVar: 'json__17', layerName: 'layer__17', pane: 'pane__17', onEachFeature: pop__17, styles: [style__17_0, style__17_1] });
+        var layer__18 = new L.geoJson.multiStyle(json__18, { interactive: true, dataVar: 'json__18', layerName: 'layer__18', pane: 'pane__18', onEachFeature: pop__18, styles: [style__18_0, style__18_1] });
+        var layer__19 = new L.geoJson.multiStyle(json__19, { interactive: true, dataVar: 'json__19', layerName: 'layer__19', pane: 'pane__19', onEachFeature: pop__19, styles: [style__19_0, style__19_1] });
+        var layer_1000_20 = new L.geoJson(json_1000_20, { interactive: true, dataVar: 'json_1000_20', layerName: 'layer_1000_20', pane: 'pane_1000_20', onEachFeature: pop_1000_20, pointToLayer: function(f, ll) { return L.circleMarker(ll, style_1000_20_0()); } });
+        var layer_1000_21 = new L.geoJson(json_1000_21, { interactive: true, dataVar: 'json_1000_21', layerName: 'layer_1000_21', pane: 'pane_1000_21', onEachFeature: pop_1000_21, pointToLayer: function(f, ll) { return L.circleMarker(ll, style_1000_21_0()); } });
+        var layer__22 = new L.geoJson(json__22, { interactive: true, dataVar: 'json__22', layerName: 'layer__22', pane: 'pane__22', onEachFeature: pop__22, pointToLayer: function(f, ll) { return L.circleMarker(ll, style__22_0()); } });
+        var layer__23 = new L.geoJson(json__23, { interactive: true, dataVar: 'json__23', layerName: 'layer__23', pane: 'pane__23', onEachFeature: pop__23, pointToLayer: function(f, ll) { return L.circleMarker(ll, style__23_0()); } });
+        var layer__24 = new L.geoJson(json__24, { interactive: true, dataVar: 'json__24', layerName: 'layer__24', pane: 'pane__24', onEachFeature: pop__24, style: style__24_0 });
+        var layer__25 = new L.geoJson(json__25, { interactive: true, dataVar: 'json__25', layerName: 'layer__25', pane: 'pane__25', onEachFeature: pop__25, pointToLayer: function(f, ll) { return L.marker(ll, style__25_0()); } });
+        var layer__26 = new L.geoJson(json__26, { interactive: true, dataVar: 'json__26', layerName: 'layer__26', pane: 'pane__26', onEachFeature: pop__26, pointToLayer: function(f, ll) { return L.marker(ll, style__26_0()); } });
+        var layer__27 = new L.geoJson(json__27, { interactive: true, dataVar: 'json__27', layerName: 'layer__27', pane: 'pane__27', onEachFeature: pop__27, pointToLayer: function(f, ll) { return L.marker(ll, style__27_0()); } });
+        var layer__28 = new L.geoJson(json__28, { interactive: true, dataVar: 'json__28', layerName: 'layer__28', pane: 'pane__28', onEachFeature: pop__28, pointToLayer: function(f, ll) { return L.marker(ll, style__28_0()); } });
+        var layer__29 = new L.geoJson(json__29, { interactive: true, dataVar: 'json__29', layerName: 'layer__29', pane: 'pane__29', onEachFeature: pop__29, pointToLayer: function(f, ll) { return L.marker(ll, style__29_0()); } });
+        var layer__30 = new L.geoJson(json__30, { interactive: true, dataVar: 'json__30', layerName: 'layer__30', pane: 'pane__30', onEachFeature: pop__30, pointToLayer: function(f, ll) { return L.marker(ll, style__30_0()); } });
+        var layer__31 = new L.geoJson(json__31, { interactive: true, dataVar: 'json__31', layerName: 'layer__31', pane: 'pane__31', onEachFeature: pop__31, pointToLayer: function(f, ll) { return L.marker(ll, style__31_0()); } });
+        var layer__32 = new L.geoJson(json__32, { interactive: true, dataVar: 'json__32', layerName: 'layer__32', pane: 'pane__32', onEachFeature: pop__32, pointToLayer: function(f, ll) { return L.marker(ll, style__32_0()); } });
+        var layer__33 = new L.geoJson(json__33, { interactive: true, dataVar: 'json__33', layerName: 'layer__33', pane: 'pane__33', onEachFeature: pop__33, pointToLayer: function(f, ll) { return L.marker(ll, style__33_0()); } });
+        var layer__34 = new L.geoJson(json__34, { interactive: true, dataVar: 'json__34', layerName: 'layer__34', pane: 'pane__34', onEachFeature: pop__34, pointToLayer: function(f, ll) { return L.marker(ll, style__34_0()); } });
+        var layer__35 = new L.geoJson(json__35, { interactive: true, dataVar: 'json__35', layerName: 'layer__35', pane: 'pane__35', onEachFeature: pop__35, pointToLayer: function(f, ll) { return L.marker(ll, style__35_0()); } });
+        var layer__36 = new L.geoJson(json__36, { interactive: true, dataVar: 'json__36', layerName: 'layer__36', pane: 'pane__36', onEachFeature: pop__36, pointToLayer: function(f, ll) { return L.marker(ll, style__36_0()); } });
+        var layer__37 = new L.geoJson(json__37, { interactive: true, dataVar: 'json__37', layerName: 'layer__37', pane: 'pane__37', onEachFeature: pop__37, pointToLayer: function(f, ll) { return L.marker(ll, style__37_0()); } });
+        var layer__38 = new L.geoJson(json__38, { interactive: true, dataVar: 'json__38', layerName: 'layer__38', pane: 'pane__38', onEachFeature: pop__38, style: style__38_0 });
+        var layer__39 = new L.geoJson(json__39, { interactive: true, dataVar: 'json__39', layerName: 'layer__39', pane: 'pane__39', onEachFeature: pop__39, style: style__39_0 });
+        
+        // Отдельные слои для каждого типа населённых пунктов (фильтруем по landuse)
+var layer__12_residential = L.geoJson(json__12, {
+    interactive: true,
+    layerName: 'layer__12_residential',
+    pane: 'pane__12',
+    onEachFeature: pop__12,
+    filter: function(feature) {
+        return feature.properties.landuse === 'residential';
+    },
+    style: style__12_0
+});
+
+var layer__12_commercial = L.geoJson(json__12, {
+    interactive: true,
+    layerName: 'layer__12_commercial',
+    pane: 'pane__12',
+    onEachFeature: pop__12,
+    filter: function(feature) {
+        return feature.properties.landuse === 'commercial' || feature.properties.landuse === 'retail';
+    },
+    style: style__12_0
+});
+
+var layer__12_industrial = L.geoJson(json__12, {
+    interactive: true,
+    layerName: 'layer__12_industrial',
+    pane: 'pane__12',
+    onEachFeature: pop__12,
+    filter: function(feature) {
+        return feature.properties.landuse === 'industrial';
+    },
+    style: style__12_0
+});
+
+var layer__12_cemetery = L.geoJson(json__12, {
+    interactive: true,
+    layerName: 'layer__12_cemetery',
+    pane: 'pane__12',
+    onEachFeature: pop__12,
+    filter: function(feature) {
+        return feature.properties.landuse === 'cemetery';
+    },
+    style: style__12_0
+});
+
+var layer__12_airport = L.geoJson(json__12, {
+    interactive: true,
+    layerName: 'layer__12_airport',
+    pane: 'pane__12',
+    onEachFeature: pop__12,
+    filter: function(feature) {
+        return feature.properties.landuse === 'airport';
+    },
+    style: style__12_0
+});
+
+        // Кластеры
+        var cluster__25 = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 2 });
+        cluster__25.addLayer(layer__25);
+        
+        // Сохраняем слои
+        allLayers = {
+            'layer__0': layer__0, 'layer__1': layer__1, 'layer__2': layer__2, 'layer__3': layer__3, 'layer__4': layer__4,
+            'layer__5': layer__5, 'layer__6': layer__6, 'layer__7': layer__7, 'layer__8': layer__8, 'layer__9': layer__9,
+            'layer__10': layer__10, 'layer__11': layer__11, 'layer__12_residential': layer__12_residential,
+            'layer__12_commercial': layer__12_commercial,'layer__12_industrial': layer__12_industrial,'layer__12_cemetery': layer__12_cemetery,
+            'layer__12_airport': layer__12_airport, 'layer__13': layer__13, 'layer__14': layer__14,
+            'layer__15': layer__15, 'layer__16': layer__16, 'layer__17': layer__17, 'layer__18': layer__18, 'layer__19': layer__19,
+            'layer_1000_20': layer_1000_20, 'layer_1000_21': layer_1000_21, 'layer__22': layer__22, 'layer__23': layer__23,
+            'layer__24': layer__24, 'layer__25': layer__25, 'layer__26': layer__26, 'layer__27': layer__27, 'layer__28': layer__28,
+            'layer__29': layer__29, 'layer__30': layer__30, 'layer__31': layer__31, 'layer__32': layer__32, 'layer__33': layer__33,
+            'layer__34': layer__34, 'layer__35': layer__35, 'layer__36': layer__36, 'layer__37': layer__37, 'layer__38': layer__38,
+            'layer__39': layer__39, 'cluster__25': cluster__25
+        };
+        
+        // Добавляем на карту
+        for (var key in allLayers) {
+            if (allLayers[key]) {
+                bounds_group.addLayer(allLayers[key]);
+                if (key !== 'cluster__25') { map.addLayer(allLayers[key]); } 
+                else { allLayers[key].addTo(map); }
+                layerVisibility[key] = true;
+            }
+        }
+        
+        // Функция переключения слоёв
+        function toggleLayer(layerName, layerObj) {
+            if (!layerObj) return;
+            if (layerVisibility[layerName]) {
+                map.removeLayer(layerObj);
+                if (layerName === 'cluster__25' && layerObj._layers) { /* ничего */ }
+                layerVisibility[layerName] = false;
+            } else {
+                if (layerName === 'cluster__25') { layerObj.addTo(map); } 
+                else { map.addLayer(layerObj); }
+                layerVisibility[layerName] = true;
+            }
+        }
+        
+        // ========== ЛЕГЕНДА ==========
+        var legendHTML = `
+            <div class="legend-title">Легенда карты</div>
+            <div class="legend-section"><div class="legend-section-title">Земли промышленных объектов</div>
+                <div class="legend-item" data-layer="layer__24"><div class="legend-color" style="background-color: rgba(242,213,239,1.0);"></div><span class="legend-text">Промышленные кварталы</span></div>
+                <div class="legend-item" data-layer="layer__24"><div class="legend-color" style="background-color: rgba(147,95,84,1.0);"></div><span class="legend-text">Карьер</span></div>
+                <div class="legend-item" data-layer="layer__24"><div class="legend-color" style="background-color: rgba(182,195,240,1.0);"></div><span class="legend-text">Отходы</span></div>
+            </div>
+            <div class="legend-section"><div class="legend-section-title">Санитарные зоны</div>
+                <div class="legend-item" data-layer="layer__14"><img src="legend/_14.png" class="legend-img" /><span class="legend-text">Санитарно-защитные зоны предприятий</span></div>
+                <div class="legend-item" data-layer="layer__13"><img src="legend/_13.png" class="legend-img" /><span class="legend-text">Санитарные разрывы автомобильных дорог</span></div>
+            </div>
+            <div class="legend-section"><div class="legend-section-title">Виды промышленности</div>
+                <table class="legend-table"><tr><td data-layer="layer__37"><img src="legend/_37.png" /></td><td data-layer="layer__37">Водоснабжение</tr><tr><td data-layer="layer__36"><img src="legend/_36.png" /></td><td data-layer="layer__36">Добывающая промышленность</tr><tr><td data-layer="layer__35"><img src="legend/_35.png" /></td><td data-layer="layer__35">Легкая промышленность</tr><tr><td data-layer="layer__34"><img src="legend/_34.png" /></td><td data-layer="layer__34">Машиностроение</tr><tr><td data-layer="layer__33"><img src="legend/_33.png" /></td><td data-layer="layer__33">Нефтехранилище</tr><tr><td data-layer="layer__32"><img src="legend/_32.png" /></td><td data-layer="layer__32">Пищевая промышленность</tr><tr><td data-layer="layer__31"><img src="legend/_31.png" /></td><td data-layer="layer__31">Производство древесины</tr><tr><td data-layer="layer__30"><img src="legend/_30.png" /></td><td data-layer="layer__30">Стройматериалы</tr><tr><td data-layer="layer__29"><img src="legend/_29.png" /></td><td data-layer="layer__29">Сбор отходов</tr><tr><td data-layer="layer__28"><img src="legend/_28.png" /></td><td data-layer="layer__28">Фармацевтика</tr><tr><td data-layer="layer__27"><img src="legend/_27.png" /></td><td data-layer="layer__27">Химическая промышленность</tr><tr><td data-layer="layer__26"><img src="legend/_26.png" /></td><td data-layer="layer__26">Энергетика</tr></table>
+            </div>
+            <div class="legend-section"><div class="legend-section-title">Гидрография</div>
+                <div class="legend-item" data-layer="layer__6,layer__7"><img src="legend/_7.png" class="legend-img" /><span class="legend-text">Реки</span></div>
+                <div class="legend-item" data-layer="layer__8,layer__9,layer__10"><img src="legend/_9.png" class="legend-img" /><span class="legend-text">Озера</span></div>
+            </div>
+            <div class="legend-section"><div class="legend-section-title">Горизонтали</div>
+                <div class="legend-item" data-layer="layer__4"><img src="legend/_4.png" class="legend-img" /><span class="legend-text">Основные</span></div>
+                <div class="legend-item" data-layer="layer__3"><img src="legend/_3.png" class="legend-img" /><span class="legend-text">Дополнительные</span></div>
+                <div class="legend-item" data-layer="layer__2"><img src="legend/_2.png" class="legend-img" /><span class="legend-text">Вспомогательные</span></div>
+            </div>
+            <div class="legend-section"><div class="legend-item" data-layer="layer__0"><img src="legend/_0.png" class="legend-img" /><span class="legend-text">Земли лесного фонда</span></div></div>
+            <div class="legend-section"><div class="legend-item" data-layer="layer__1"><img src="legend/_1.png" class="legend-img" /><span class="legend-text">Земли сельскохозяйственого назначения</span></div></div>
+            <div class="legend-section"><div class="legend-item" data-layer="layer__5"><img src="legend/_5.png" class="legend-img" /><span class="legend-text">Земли особо охраняемых природных территорий</span></div></div>
+            <div class="legend-section"><div class="legend-section-title">Земли населенных пунктов</div>
+            <div class="legend-item" data-layer="layer__12_industrial"><div class="legend-color" style="background-color: rgba(186,186,186,1.0);"></div><span class="legend-text">Промышленные зоны</span></div>
+                <div class="legend-item" data-layer="layer__12_cemetery"><div class="legend-color" style="background-color: rgba(255,255,255,1.0); border:1px solid #999;"></div><span class="legend-text">Кладбище</span></div>
+                <div class="legend-item" data-layer="layer__12_commercial"><div class="legend-color" style="background-color: rgba(203,179,200,1.0);"></div><span class="legend-text">Коммерческие зоны</span></div>
+                <div class="legend-item" data-layer="layer__12_residential"><div class="legend-color" style="background-color: rgba(230,219,212,1.0);"></div><span class="legend-text">Жилые кварталы</span></div>
+                <div class="legend-item" data-layer="layer__12_airport"><img src="legend/_25.png" class="legend-img-airport" /><span class="legend-text">Международный аэропорт</span></div>
+            </div>
+            <div class="legend-section"><div class="legend-section-title">Дорожная сеть</div>
+                <div class="legend-item" data-layer="layer__19"><img src="legend/_19.png" class="legend-img" /><span class="legend-text">Магистральные дороги</span></div>
+                <div class="legend-item" data-layer="layer__18"><img src="legend/_18.png" class="legend-img" /><span class="legend-text">Федеральные дороги</span></div>
+                <div class="legend-item" data-layer="layer__17"><img src="legend/_17.png" class="legend-img" /><span class="legend-text">Муниципальные дороги</span></div>
+                <div class="legend-item" data-layer="layer__16"><img src="legend/_16.png" class="legend-img" /><span class="legend-text">Местные дороги</span></div>
+                <div class="legend-item" data-layer="layer__15"><img src="legend/_15.png" class="legend-img" /><span class="legend-text">Железные дороги</span></div>
+            </div>
+            <div class="legend-section"><div class="legend-section-title">Границы</div>
+                <div class="legend-item" data-layer="layer__39"><img src="legend/_39.png" class="legend-img" /><span class="legend-text">Граница городского округа</span></div>
+                <div class="legend-item" data-layer="layer__38"><div class="legend-dashed-line"></div><span class="legend-text">Граница районов города</span></div>
+            </div>
+        `;
+        
+        document.getElementById('legendContainer').innerHTML = legendHTML;
+        
+        // Обработчики легенды
+        document.querySelectorAll('.legend-item[data-layer]').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var layerNames = this.getAttribute('data-layer').split(',');
+                layerNames.forEach(function(layerName) {
+                    if (allLayers[layerName]) { toggleLayer(layerName, allLayers[layerName]); }
+                });
+            });
+        });
+        document.querySelectorAll('.legend-table td[data-layer]').forEach(function(td) {
+            td.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var layerName = this.getAttribute('data-layer');
+                if (allLayers[layerName]) { toggleLayer(layerName, allLayers[layerName]); }
+            });
+        });
+        
+        // ========== ПАНЕЛЬ ПРЕДПРИЯТИЙ ==========
+        setTimeout(function() {
+            try {
+                var enterprises = [];
+                if (layer__24) {
+                    layer__24.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties) {
+                            var props = layer.feature.properties;
+                            var name = props.name || props.NAME || props['название'] || props.title || null;
+                            var landuse = props.landuse || '';
+                            var typeText = landuse === 'industrial' ? 'Промышленная зона' : (landuse === 'quarry' ? 'Карьер' : (landuse === 'landfill' ? 'Полигон отходов' : landuse));
+                            if (!name && typeText !== 'undefined' && typeText !== '') {
+                                try {
+                                    var center = layer.getBounds().getCenter();
+                                    name = typeText + ' (' + center.lat.toFixed(4) + ', ' + center.lng.toFixed(4) + ')';
+                                } catch(e) { name = typeText; }
+                            }
+                            if (name && name !== 'undefined') {
+                                var centerPoint = null;
+                                try { centerPoint = layer.getBounds().getCenter(); } catch(e) { if (layer.getLatLng) centerPoint = layer.getLatLng(); }
+                                enterprises.push({ name: name, type: typeText, layer: layer, center: centerPoint });
+                            }
+                        }
+                    });
+                }
+                var panel = document.getElementById('enterprisesPanel');
+                var listDiv = document.getElementById('enterprisesList');
+                if (panel && listDiv) {
+                    if (enterprises.length === 0) {
+                        listDiv.innerHTML = '<div style="text-align:center;padding:20px;">Нет данных о предприятиях</div>';
+                    } else {
+                        listDiv.innerHTML = '';
+                        enterprises.forEach(function(ent) {
+                            var div = document.createElement('div');
+                            div.className = 'enterprise-item';
+                            div.innerHTML = '<strong>' + escapeHtml(ent.name) + '</strong><div class="enterprise-type">' + escapeHtml(ent.type) + '</div>';
+                            div.addEventListener('click', function() {
+                                if (fixedPopup) map.closePopup(fixedPopup);
+                                fixedPopup = null;
+                                if (ent.center) {
+                                    map.flyTo(ent.center, 16, { duration: 0.6 });
+                                    setTimeout(function() {
+                                        try { ent.layer.openPopup(); fixedPopup = ent.layer._popup; 
+                                        if (fixedPopup) { fixedPopup._fixed = true; if (fixedPopup._wrapper) fixedPopup._wrapper.classList.add('leaflet-popup-fixed'); } } 
+                                        catch(e) { console.warn(e); }
+                                    }, 650);
+                                } else { ent.layer.openPopup(); }
+                            });
+                            listDiv.appendChild(div);
+                        });
+                    }
+                    panel.style.display = 'flex';
+                }
+            } catch(e) { console.warn("Ошибка панели предприятий:", e); }
+            function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, function(m){ return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'; }); }
+        }, 500);
+        
+        // ========== ПОДПИСИ (ТУЛТИПЫ) - ВОТ ОНИ! ==========
+        setTimeout(function() {
+            try {
+                if (typeof layer_1000_20 !== 'undefined' && layer_1000_20) {
+                    layer_1000_20.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties && layer.feature.properties['name']) {
+                            layer.bindTooltip('<div class="css_1000_18">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16], className: 'css_1000_18' });
+                        }
+                    });
+                }
+                if (typeof layer_1000_21 !== 'undefined' && layer_1000_21) {
+                    layer_1000_21.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties && layer.feature.properties['name']) {
+                            layer.bindTooltip('<div class="css_1000_19">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16], className: 'css_1000_19' });
+                        }
+                    });
+                }
+                if (typeof layer__22 !== 'undefined' && layer__22) {
+                    layer__22.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties && layer.feature.properties['name']) {
+                            layer.bindTooltip('<div class="css__20">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16], className: 'css__20' });
+                        }
+                    });
+                }
+                if (typeof layer__23 !== 'undefined' && layer__23) {
+                    layer__23.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties && layer.feature.properties['name']) {
+                            layer.bindTooltip('<div class="css__21">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16], className: 'css__21' });
+                        }
+                    });
+                }
+                console.log("Подписи успешно добавлены!");
+            } catch(e) { console.warn("Ошибка подписей:", e); }
+        }, 600);
+        
+        // Стабилизация карты
+        map.on('click', function(e) {
+            if (fixedPopup && e.originalEvent && !e.originalEvent.target.closest('.leaflet-popup')) { 
+                map.closePopup(fixedPopup); fixedPopup = null; 
+            }
+        });
+        map.on('popupopen', function(e) {
+            setTimeout(function() { if (map.getZoom() > 18) map.setZoom(18); }, 100);
+        });
+        
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && fixedPopup) { map.closePopup(fixedPopup); fixedPopup = null; } });
+        // Добавляем отдельные слои для населённых пунктов
+if (typeof layer__12_residential !== 'undefined') {
+    map.addLayer(layer__12_residential);
+    map.addLayer(layer__12_commercial);
+    map.addLayer(layer__12_industrial);
+    map.addLayer(layer__12_cemetery);
+    map.addLayer(layer__12_airport);
+    
+    bounds_group.addLayer(layer__12_residential);
+    bounds_group.addLayer(layer__12_commercial);
+    bounds_group.addLayer(layer__12_industrial);
+    bounds_group.addLayer(layer__12_cemetery);
+    bounds_group.addLayer(layer__12_airport);
+    
+    layerVisibility['layer__12_residential'] = true;
+    layerVisibility['layer__12_commercial'] = true;
+    layerVisibility['layer__12_industrial'] = true;
+    layerVisibility['layer__12_cemetery'] = true;
+    layerVisibility['layer__12_airport'] = true;
+}
+        setBounds();
+        </script>
+    </body>
+</html>

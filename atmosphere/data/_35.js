@@ -1,0 +1,1 @@
+var json__35 = {"type":"FeatureCollection","name":"_35","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"БТК Текстиль \"БМК\" Меланжист Алтая","type":"Легкая промышленность"},"geometry":{"type":"Point","coordinates":[83.773418074785582,53.374048612270101]}}]}

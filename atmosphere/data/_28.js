@@ -1,0 +1,1 @@
+var json__28 = {"type":"FeatureCollection","name":"_28","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"Барнаульский завод медицинский препаратов","type":"Фармацевтика"},"geometry":{"type":"Point","coordinates":[83.744709120108496,53.335598063242799]}}]}

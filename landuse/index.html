@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="css/leaflet.photon.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Заголовок карты */
+        .map-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid #3498db;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            white-space: nowrap;
+        }
+
+        /* Контейнер легенды - всегда видима, больше и длиннее */
+        .legend-container {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            height: calc(100% - 100px);
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            border: 2px solid #2ecc71;
+            width: 380px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+        /* Панель управления индексами */
+        .controls-container {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            z-index: 1000;
+            width: 320px;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 10px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+            border: 2px solid #3498db;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            backdrop-filter: blur(5px);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: calc(100% - 100px);
+            overflow-y: auto;
+        }
+
+        .controls-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 5px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .index-btn {
+            background: white;
+            border: 2px solid;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        .index-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .index-btn:active { transform: translateY(1px); }
+        .btn-ndvi { border-color: #4caf50; color: #4caf50; }
+        .btn-ndvi:hover { background: #4caf50; color: white; }
+        .btn-ndti { border-color: #2a5298; color: #2a5298; }
+        .btn-ndti:hover { background: #2a5298; color: white; }
+        .btn-bsi { border-color: #cd7a32; color: #cd7a32; }
+        .btn-bsi:hover { background: #cd7a32; color: white; }
+        .btn-reset { border-color: #777; color: #777; }
+        .btn-reset:hover { background: #777; color: white; }
+
+        /* Информационные блоки */
+        .info-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #333;
+            display: none;
+            transition: all 0.3s ease;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .info-block.show { display: block; }
+        .info-ndvi { border-left-color: #2d7a2f; }
+        .info-ndti { border-left-color: #5889dd; }
+        .info-bsi { border-left-color: #704e2f; }
+        .info-block p { margin: 0 0 8px 0; }
+        .info-block .formula {
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 5px;
+            border-radius: 4px;
+            margin: 6px 0;
+            font-size: 11px;
+        }
+
+        /* Стили легенды - без сворачивания */
+        .legend-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .legend-section { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #eee; }
+        .legend-section-title { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #34495e; }
+        .legend-subtitle { font-size: 17px; font-weight: 600; margin: 10px 0 8px 0; color: #2c3e50; padding-left: 5px; border-left: 3px solid #3498db; }
+        .legend-item {
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 5px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .legend-item:hover { background-color: #e8f4fd; }
+        .legend-item.layer-off { opacity: 0.5; }
+        .legend-color { display: inline-block; width: 24px; height: 24px; margin-right: 12px; border-radius: 4px; border: 1px solid #ddd; flex-shrink: 0; }
+        .legend-img { width: 24px; height: 24px; margin-right: 12px; flex-shrink: 0; object-fit: contain; }
+        .legend-dashed-line { display: inline-block; width: 24px; height: 4px; background: repeating-linear-gradient(90deg, #b56a95, #b56a95 8px, transparent 8px, transparent 16px); margin-right: 12px; }
+        .legend-text { font-size: 16px; line-height: 1.4; }
+
+        /* Стили попапов */
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            border: 2px solid #3498db;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .leaflet-popup-content {
+            font-size: 13px;
+            max-width: 380px !important;
+            max-height: 350px !important;
+            overflow-y: auto !important;
+            padding: 0;
+            margin: 0;
+        }
+        .custom-popup-content { padding: 8px; }
+        .attribute-group { margin-bottom: 10px; padding: 8px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #3498db; }
+        .attribute-title { font-weight: 700; color: #2c3e50; font-size: 13px; margin-bottom: 3px; display: block; }
+        .attribute-value { color: #34495e; font-size: 12px; word-break: break-word; }
+        .popup-header {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            padding: 8px;
+            margin: -8px -8px 10px -8px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .leaflet-popup-fixed .leaflet-popup-content-wrapper { border: 3px solid #e74c3c; }
+        .leaflet-popup-fixed .popup-header { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        /* Скрываем стандартные элементы */
+        .leaflet-control-layers { display: none !important; }
+        .leaflet-control-attribution { display: none !important; }
+
+        /* Стили для подписей - оригинальные шрифты */
+        .css_1000_21 {
+            font-family: 'P152', sans-serif;
+            font-weight: bold;
+            font-size: 12pt;
+            color: #323232;
+            text-shadow: 1px 1px 0 white;
+        }
+        .css_1000_22 {
+            font-family: 'T132', sans-serif;
+            font-weight: bold;
+            font-size: 10pt;
+            color: #323232;
+            text-shadow: 1px 1px 0 white;
+        }
+        .css__23 {
+            font-family: 'D432', sans-serif;
+            font-style: italic;
+            font-size: 12pt;
+            color: #323232;
+            text-shadow: 1px 1px 0 white;
+        }
+        .css__24 {
+            font-family: 'Ch122', sans-serif;
+            font-weight: bold;
+            font-size: 10pt;
+            color: #323232;
+            text-shadow: 1px 1px 0 white;
+        }
+
+        @media (max-width: 768px) {
+            .controls-container { width: 260px; top: 70px; left: 10px; padding: 10px; }
+            .legend-container { width: 300px; right: 10px; bottom: 10px; padding: 12px; }
+            .map-title { font-size: 14px; padding: 6px 12px; white-space: normal; top: 5px; }
+            .index-btn { font-size: 14px; padding: 8px 0; }
+            .css_1000_21, .css_1000_22, .css__23, .css__24 { font-size: 8pt !important; }
+        }
+        </style>
+        <title>Карта природного каркаса города Барнаула</title>
+    </head>
+    <body>
+        <div class="map-title">Карта природного каркаса города Барнаула</div>
+        
+        <div class="controls-container">
+            <div class="controls-title">Управление индексами</div>
+            <button id="btnNDVI" class="index-btn btn-ndvi">Показать вегетационный индекс NDVI</button>
+            <div id="infoNDVI" class="info-block info-ndvi">
+                <p><strong>NDVI</strong> – спектральный индекс, используемый для количественной оценки фотосинтетической активности растительности. Он основан на разнице в отражении растительностью красного (поглощается хлорофиллом) и ближнего инфракрасного (отражается мезофиллом листьев) света.</p>
+                <div class="formula">NDVI = (NIR - RED) / (NIR + RED)</div>
+                <p>Значения индекса NDVI в Барнауле в 2023 году составили от 0,06 до 0,92. Диапазон указывает на высокую контрастность: от практически отсутствующей или угнетенной растительности (0,06) до очень густой и здоровой (0,92). Наиболее здоровая растительность находится в Ленточном Бору и в лесах вдоль Оби, угнетенная растительность в основном представлена городскими насаждениями (парки, скверы, насаждения вблизи автомобильных дорог). Низкие значения вегетационного индекса соответствуют высокой антропогенной нагрузке и загрязнению атмосферы.</p>
+            </div>
+            <button id="btnNDTI" class="index-btn btn-ndti">Показать индекс мутности воды NDTI</button>
+            <div id="infoNDTI" class="info-block info-ndti">
+                <p><strong>NDTI</strong> – нормализованный разностный индекс мутности воды, используется для оценки содержания взвешенных частиц в водных объектах.</p>
+                <div class="formula">NDTI = (GREEN - RED) / (GREEN + RED)</div>
+                <p>Значения индекса NDTI в Барнауле в 2023 году составили от -0,38 до 0,09. Отрицательные значения соответствуют чистой воде, положительные – повышенной мутности. Наиболее чистые воды наблюдаются в верхнем течении Оби выше города, повышенная мутность фиксируется в черте города и ниже по течению, что связано со сбросами промышленных предприятий и ливневыми стоками. Самые высокие значения мутности соответствуют Золошлакоотвалам ТЭЦ.</p>
+            </div>
+            <button id="btnBSI" class="index-btn btn-bsi">Показать индекс оголенности почв BSI</button>
+            <div id="infoBSI" class="info-block info-bsi">
+                <p><strong>BSI</strong> – индекс обнаженной почвы, используется для выявления участков с оголенной или деградированной почвой.</p>
+                <div class="formula">BSI = ((RED + SWIR) - (NIR + BLUE)) / ((RED + SWIR) + (NIR + BLUE))</div>
+                <p>Значения индекса BSI в Барнауле в 2023 году составили от -0,40 до 0,33. Положительные значения указывают на наличие обнаженных почв, отрицательные – на наличие растительного покрова. Высокие значения BSI характерны для промышленных зон, карьеров, территорий с нарушенным почвенным покровом и участков с выраженной эрозией - наиболее распространены эти участки вблизи городской застройки и промышленных объектов. Низкие значения соответствуют сельскохозяйственным угодьям вдали от городской застройки.</p>
+            </div>
+            <button id="btnReset" class="index-btn btn-reset">Сбросить (показать все)</button>
+        </div>
+
+        <div class="legend-container" id="legendContainer">
+            <div class="legend-title">Легенда карты</div>
+            
+            <div class="legend-section">
+                <div class="legend-section-title">Спектральные индексы</div>
+                <div class="legend-subtitle">NDVI</div>
+                <div class="legend-item" data-layer="NDVI_3" data-class="0.06-0.34"><div class="legend-color" style="background: rgba(166,97,26,0.85);"></div><span class="legend-text">Высокая степень болезненности растительности (0.06-0.34)</span></div>
+                <div class="legend-item" data-layer="NDVI_3" data-class="0.34-0.61"><div class="legend-color" style="background: rgba(211,174,104,0.85);"></div><span class="legend-text">Умеренная степень болезненности (0.34-0.61)</span></div>
+                <div class="legend-item" data-layer="NDVI_3" data-class="0.61-0.72"><div class="legend-color" style="background: rgba(180,200,151,0.85);"></div><span class="legend-text">Ослабленная растительность (0.61-0.72)</span></div>
+                <div class="legend-item" data-layer="NDVI_3" data-class="0.72-0.80"><div class="legend-color" style="background: rgba(127,187,156,0.85);"></div><span class="legend-text">Здоровая растительность (0.72-0.80)</span></div>
+                <div class="legend-item" data-layer="NDVI_3" data-class="0.80-0.93"><div class="legend-color" style="background: rgba(81,134,104,0.85);"></div><span class="legend-text">Высокая степень здоровья растительности(0.80-0.93)</span></div>
+                
+                <div class="legend-subtitle">NDTI</div>
+                <div class="legend-item" data-layer="NDTI_13" data-class="-0.38 - -0.28"><div class="legend-color" style="background: rgba(247,251,255,1.0);"></div><span class="legend-text">Очень чистая вода (-0.38 - -0.28)</span></div>
+                <div class="legend-item" data-layer="NDTI_13" data-class="-0.28 - -0.19"><div class="legend-color" style="background: rgba(215,230,245,1.0);"></div><span class="legend-text">Чистая вода (-0.28 - -0.19)</span></div>
+                <div class="legend-item" data-layer="NDTI_13" data-class="-0.19 - -0.10"><div class="legend-color" style="background: rgba(171,198,231,1.0);"></div><span class="legend-text">Слабая мутность (-0.19 - -0.10)</span></div>
+                <div class="legend-item" data-layer="NDTI_13" data-class="-0.10 - 0.00"><div class="legend-color" style="background: rgba(114,154,215,1.0);"></div><span class="legend-text">Умеренная мутность (-0.10 - 0.00)</span></div>
+                <div class="legend-item" data-layer="NDTI_13" data-class="0.00 - 0.09"><div class="legend-color" style="background: rgba(57,109,198,1.0);"></div><span class="legend-text">Повышенная мутность (0.00 - 0.09)</span></div>
+
+                <div class="legend-subtitle">BSI</div>
+                <div class="legend-item" data-layer="BSI_2" data-class="-0.40 - -0.22"><div class="legend-color" style="background: rgba(252,230,198,1.0);"></div><span class="legend-text">Здоровые почвы (-0.40 - -0.22)</span></div>
+                <div class="legend-item" data-layer="BSI_2" data-class="-0.22 - -0.04"><div class="legend-color" style="background: rgba(208,185,162,1.0);"></div><span class="legend-text">Естественные почвы с минимальной эрозией (-0.22 - -0.04)</span></div>
+                <div class="legend-item" data-layer="BSI_2" data-class="-0.04 - 0.08"><div class="legend-color" style="background: rgba(163,140,126,1.0);"></div><span class="legend-text">Участки на начальной стадии деградации (-0.04 - 0.08)</span></div>
+                <div class="legend-item" data-layer="BSI_2" data-class="0.08 - 0.20"><div class="legend-color" style="background: rgba(134,114,102,1.0);"></div><span class="legend-text">Ярко выраженная эрозия (0.08 - 0.20)</span></div>
+                <div class="legend-item" data-layer="BSI_2" data-class="0.20 - 0.33"><div class="legend-color" style="background: rgba(105,90,80,1.0);"></div><span class="legend-text">Разрушенные почвы (0.20 - 0.33)</span></div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-section-title">Гидрография</div>
+                <div class="legend-item" data-layer="layer__8"><img src="legend/_9.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Реки</span></div>
+                <div class="legend-item" data-layer="layer__10"><img src="legend/_11.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Озера</span></div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-section-title">Рельеф</div>
+                <div class="legend-item" data-layer="layer__6"><img src="legend/_6.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Основные горизонтали</span></div>
+                <div class="legend-item" data-layer="layer__5"><img src="legend/_5.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Дополнительные горизонтали</span></div>
+                <div class="legend-item" data-layer="layer__4"><img src="legend/_4.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Вспомогательные горизонтали</span></div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-item" data-layer="layer__0"><img src="legend/_0.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Земли лесного фонда</span></div>
+            </div>
+            <div class="legend-section">  
+                <div class="legend-item" data-layer="layer__1"><img src="legend/_1.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Земли сельскохозяйственного назначения</span></div>
+            </div>
+            <div class="legend-section">     
+                <div class="legend-item" data-layer="layer__7"><img src="legend/_7.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Земли особо охраняемых природных территорий</span></div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-section-title">Земли населенных пунктов</div>
+                <div class="legend-item" data-layer="layer__15" data-landuse="industrial"><div class="legend-color" style="background: rgba(186,186,186,1.0);"></div><span class="legend-text">Промышленные зоны</span></div>
+                <div class="legend-item" data-layer="layer__15" data-landuse="cemetery"><div class="legend-color" style="background: rgba(255,255,255,1.0); border:1px solid #999;"></div><span class="legend-text">Кладбище</span></div>
+                <div class="legend-item" data-layer="layer__15" data-landuse="commercial"><div class="legend-color" style="background: rgba(203,179,200,1.0);"></div><span class="legend-text">Коммерческие зоны</span></div>
+                <div class="legend-item" data-layer="layer__15" data-landuse="residential"><div class="legend-color" style="background: rgba(230,219,212,1.0);"></div><span class="legend-text">Жилые кварталы</span></div>
+                <div class="legend-item" data-layer="cluster__25"><img src="legend/_25.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Аэропорт</span></div>
+                <div class="legend-item" data-layer="layer__14"><img src="legend/_14.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Парки, скверы</span></div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-section-title">Дорожная сеть</div>
+                <div class="legend-item" data-layer="layer__20"><img src="legend/_20.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Магистральные дороги</span></div>
+                <div class="legend-item" data-layer="layer__19"><img src="legend/_19.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Федеральные дороги</span></div>
+                <div class="legend-item" data-layer="layer__18"><img src="legend/_18.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Муниципальные дороги</span></div>
+                <div class="legend-item" data-layer="layer__17"><img src="legend/_17.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Дороги местного значения</span></div>
+                <div class="legend-item" data-layer="layer__16"><img src="legend/_16.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Железные дороги</span></div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-section-title">Границы</div>
+                <div class="legend-item" data-layer="layer__27"><img src="legend/_27.png" class="legend-img" onerror="this.style.display='none'"><span class="legend-text">Граница городского округа</span></div>
+                <div class="legend-item" data-layer="layer__26"><div class="legend-dashed-line"></div><span class="legend-text">Границы районов города</span></div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.photon.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="data/_0.js"></script>
+        <script src="data/_1.js"></script>
+        <script src="data/BSI_2.js"></script>
+        <script src="data/NDVI_3.js"></script>
+        <script src="data/_4.js"></script>
+        <script src="data/_5.js"></script>
+        <script src="data/_6.js"></script>
+        <script src="data/_7.js"></script>
+        <script src="data/_8.js"></script>
+        <script src="data/_9.js"></script>
+        <script src="data/_10.js"></script>
+        <script src="data/_11.js"></script>
+        <script src="data/_12.js"></script>
+        <script src="data/NDTI_13.js"></script>
+        <script src="data/_14.js"></script>
+        <script src="data/_15.js"></script>
+        <script src="data/_16.js"></script>
+        <script src="data/_17.js"></script>
+        <script src="data/_18.js"></script>
+        <script src="data/_19.js"></script>
+        <script src="data/_20.js"></script>
+        <script src="data/_23.js"></script>
+        <script src="data/_24.js"></script>
+        <script src="data/_25.js"></script>
+        <script src="data/_26.js"></script>
+        <script src="data/_27.js"></script>
+        <script src="data/1000_21.js"></script>
+        <script src="data/1000_22.js"></script>
+
+        <script>
+        // Подавление ошибок
+        window.addEventListener('error', function(e) {
+            if (e.message && (e.message.includes('source map') || e.message.includes('L.Mixin.Events') || e.message.includes('ENOENT'))) {
+                e.preventDefault(); e.stopPropagation(); return false;
+            }
+        });
+
+        var origError = console.error;
+        console.error = function() {
+            if (arguments[0] && typeof arguments[0] === 'string' && 
+                (arguments[0].includes('source map') || arguments[0].includes('ENOENT'))) return;
+            origError.apply(console, arguments);
+        };
+
+        var highlightLayer, fixedPopup = null, map, autolinker;
+
+        // Функция создания попапа с заголовком для каждого слоя
+        function getPopupTitle(layerId) {
+            var titles = {
+                'layer__0': 'Земли лесного фонда',
+                'layer__1': 'Земли сельскохозяйственного назначения',
+                'BSI_2': 'Индекс оголенности почв BSI',
+                'NDVI_3': 'Вегетационный индекс NDVI',
+                'layer__4': 'Рельеф',
+                'layer__5': 'Рельеф',
+                'layer__6': 'Рельеф',
+                'layer__7': 'Особо охраняемые природные территории',
+                'layer__8': 'Гидрография',
+                'layer__9': 'Гидрография',
+                'layer__10': 'Гидрография',
+                'layer__11': 'Гидрография',
+                'layer__12': 'Гидрография',
+                'NDTI_13': 'Индекс мутности воды NDTI',
+                'layer__14': 'Парки, скверы',
+                'layer__15': 'Земли населенных пунктов',
+                'layer__16': 'Железные дороги',
+                'layer__17': 'Автомобильные дороги',
+                'layer__18': 'Автомобильные дороги',
+                'layer__19': 'Автомобильные дороги',
+                'layer__20': 'Автомобильные дороги',
+                '1000_21': 'Населенные пункты',
+                '1000_22': 'Населенные пункты',
+                'layer__23': 'Населенные пункты',
+                'layer__24': 'Населенные пункты',
+                'layer__25': 'Международный аэропорт',
+                'layer__26': 'Границы районов города',
+                'layer__27': 'Граница городского округа'
+            };
+            return titles[layerId] || 'Информация об объекте';
+        }
+
+        function createBeautifulPopup(feature, layerId) {
+            var title = getPopupTitle(layerId);
+            var popupContent = '<div class="custom-popup-content"><div class="popup-header">' + title + '</div>';
+            
+            var hasData = false;
+            var displayData = {};
+            
+            for (var key in feature.properties) {
+                var val = feature.properties[key];
+                if (val !== null && val !== undefined && val !== '' && val !== 'NULL' && key !== 'landuse') {
+                    hasData = true;
+                    displayData[key] = val;
+                }
+            }
+            
+            if (!hasData) {
+                popupContent += '<div class="attribute-group"><div class="attribute-value" style="text-align:center;">Нет дополнительных данных</div></div>';
+            } else {
+                for (var key in displayData) {
+                    var value = displayData[key];
+                    var displayName = key;
+                    var formattedValue = (typeof value === 'number') ? Number(value).toFixed(2) : String(value);
+                    popupContent += '<div class="attribute-group"><div class="attribute-title">' + displayName + '</div><div class="attribute-value">' + (autolinker ? autolinker.link(formattedValue) : formattedValue) + '</div></div>';
+                }
+            }
+            popupContent += '</div>';
+            return popupContent;
+        }
+
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            if (fixedPopup) { map.closePopup(fixedPopup); fixedPopup = null; }
+            highlightLayer.openPopup();
+        }
+
+        function bindPopupEvents(layer, feature, layerId) {
+            var popupContent = createBeautifulPopup(feature, layerId);
+            var popup = L.popup({ maxHeight: 400, className: 'custom-popup', autoPan: true, closeOnClick: false, autoClose: false }).setContent(popupContent);
+            layer.bindPopup(popup);
+            layer.on({
+                mouseout: function(e) { if (!layer._popup || !layer._popup._fixed) { if (typeof layer.closePopup == 'function') layer.closePopup(); } },
+                mouseover: highlightFeature,
+                click: function(e) {
+                    if (layer._popup) {
+                        layer._popup._fixed = true;
+                        layer._popup._wrapper.classList.add('leaflet-popup-fixed');
+                        fixedPopup = layer._popup;
+                    }
+                }
+            });
+            layer.on('popupclose', function(e) {
+                if (e.popup === fixedPopup) fixedPopup = null;
+                if (e.popup._wrapper) { e.popup._wrapper.classList.remove('leaflet-popup-fixed'); e.popup._fixed = false; }
+            });
+        }
+
+        // Инициализация карты
+        map = L.map('map', { zoomControl: false, maxZoom: 20, minZoom: 1 });
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        autolinker = new Autolinker({ truncate: { length: 30, location: 'smart' } });
+        var zoomControl = L.control.zoom({ position: 'topleft' }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() { if (bounds_group.getLayers().length) map.fitBounds(bounds_group.getBounds()); }
+
+        // Функции попапов
+        function pop__0(f,l) { bindPopupEvents(l,f,'layer__0'); }
+        function pop__1(f,l) { bindPopupEvents(l,f,'layer__1'); }
+        function pop_BSI_2(f,l) { bindPopupEvents(l,f,'BSI_2'); }
+        function pop_NDVI_3(f,l) { bindPopupEvents(l,f,'NDVI_3'); }
+        function pop__4(f,l) { bindPopupEvents(l,f,'layer__4'); }
+        function pop__5(f,l) { bindPopupEvents(l,f,'layer__5'); }
+        function pop__6(f,l) { bindPopupEvents(l,f,'layer__6'); }
+        function pop__7(f,l) { bindPopupEvents(l,f,'layer__7'); }
+        function pop__8(f,l) { bindPopupEvents(l,f,'layer__8'); }
+        function pop__9(f,l) { bindPopupEvents(l,f,'layer__9'); }
+        function pop__10(f,l) { bindPopupEvents(l,f,'layer__10'); }
+        function pop__11(f,l) { bindPopupEvents(l,f,'layer__11'); }
+        function pop__12(f,l) { bindPopupEvents(l,f,'layer__12'); }
+        function pop_NDTI_13(f,l) { bindPopupEvents(l,f,'NDTI_13'); }
+        function pop__14(f,l) { bindPopupEvents(l,f,'layer__14'); }
+        function pop__15(f,l) { bindPopupEvents(l,f,'layer__15'); }
+        function pop__16(f,l) { bindPopupEvents(l,f,'layer__16'); }
+        function pop__17(f,l) { bindPopupEvents(l,f,'layer__17'); }
+        function pop__18(f,l) { bindPopupEvents(l,f,'layer__18'); }
+        function pop__19(f,l) { bindPopupEvents(l,f,'layer__19'); }
+        function pop__20(f,l) { bindPopupEvents(l,f,'layer__20'); }
+        function pop_1000_21(f,l) { bindPopupEvents(l,f,'1000_21'); }
+        function pop_1000_22(f,l) { bindPopupEvents(l,f,'1000_22'); }
+        function pop__23(f,l) { bindPopupEvents(l,f,'layer__23'); }
+        function pop__24(f,l) { bindPopupEvents(l,f,'layer__24'); }
+        function pop__25(f,l) { bindPopupEvents(l,f,'layer__25'); }
+        function pop__26(f,l) { bindPopupEvents(l,f,'layer__26'); }
+        function pop__27(f,l) { bindPopupEvents(l,f,'layer__27'); }
+
+        // Стили слоёв
+        function style__0_0() { return { pane: 'pane__0', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(168,209,155,1.0)' }; }
+        function style__1_0() { return { pane: 'pane__1', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(232,228,173,1.0)' }; }
+        
+        // Фильтры для классов индексов
+        var currentNDVIClass = null;
+        var currentNDTIClass = null;
+        var currentBSIClass = null;
+        
+        // Фильтры для landuse в layer__15
+        var hiddenLanduses = {};
+        
+        function style_BSI_2_0(feature) {
+            var val = feature.properties['BSI mean'];
+            var classRange = '';
+            if (val >= -0.401701 && val <= -0.224866) classRange = '-0.40 - -0.22';
+            else if (val >= -0.224866 && val <= -0.041791) classRange = '-0.22 - -0.04';
+            else if (val >= -0.041791 && val <= 0.079551) classRange = '-0.04 - 0.08';
+            else if (val >= 0.079551 && val <= 0.201814) classRange = '0.08 - 0.20';
+            else if (val >= 0.201814 && val <= 0.330700) classRange = '0.20 - 0.33';
+            else return { pane: 'pane_BSI_2', opacity: 0, fillOpacity: 0, interactive: false };
+            
+            if (currentBSIClass !== null && currentBSIClass !== classRange) {
+                return { pane: 'pane_BSI_2', opacity: 0, fillOpacity: 0, interactive: false };
+            }
+            
+            if (val >= -0.401701 && val <= -0.224866) return { pane: 'pane_BSI_2', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(252,230,198,1.0)' };
+            if (val >= -0.224866 && val <= -0.041791) return { pane: 'pane_BSI_2', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(208,185,162,1.0)' };
+            if (val >= -0.041791 && val <= 0.079551) return { pane: 'pane_BSI_2', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(163,140,126,1.0)' };
+            if (val >= 0.079551 && val <= 0.201814) return { pane: 'pane_BSI_2', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(134,114,102,1.0)' };
+            if (val >= 0.201814 && val <= 0.330700) return { pane: 'pane_BSI_2', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(105,90,80,1.0)' };
+            return {};
+        }
+        
+        function style_NDVI_3_0(feature) {
+            var val = feature.properties['NDVI mean'];
+            var classRange = '';
+            if (val >= 0.064405 && val <= 0.335814) classRange = '0.06-0.34';
+            else if (val >= 0.335814 && val <= 0.605182) classRange = '0.34-0.61';
+            else if (val >= 0.605182 && val <= 0.719138) classRange = '0.61-0.72';
+            else if (val >= 0.719138 && val <= 0.796498) classRange = '0.72-0.80';
+            else if (val >= 0.796498 && val <= 0.927158) classRange = '0.80-0.93';
+            else return { pane: 'pane_NDVI_3', opacity: 0, fillOpacity: 0, interactive: false };
+            
+            if (currentNDVIClass !== null && currentNDVIClass !== classRange) {
+                return { pane: 'pane_NDVI_3', opacity: 0, fillOpacity: 0, interactive: false };
+            }
+            
+            if (val >= 0.064405 && val <= 0.335814) return { pane: 'pane_NDVI_3', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 0.85, fillColor: 'rgba(166,97,26,0.85)' };
+            if (val >= 0.335814 && val <= 0.605182) return { pane: 'pane_NDVI_3', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 0.85, fillColor: 'rgba(211,174,104,0.85)' };
+            if (val >= 0.605182 && val <= 0.719138) return { pane: 'pane_NDVI_3', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 0.85, fillColor: 'rgba(180,200,151,0.85)' };
+            if (val >= 0.719138 && val <= 0.796498) return { pane: 'pane_NDVI_3', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 0.85, fillColor: 'rgba(127,187,156,0.85)' };
+            if (val >= 0.796498 && val <= 0.927158) return { pane: 'pane_NDVI_3', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 0.85, fillColor: 'rgba(81,134,104,0.85)' };
+            return {};
+        }
+        
+        function style_NDTI_13_0(feature) {
+            var val = feature.properties['NDTI mean'];
+            var classRange = '';
+            if (val >= -0.378072 && val <= -0.284496) classRange = '-0.38 - -0.28';
+            else if (val >= -0.284496 && val <= -0.190920) classRange = '-0.28 - -0.19';
+            else if (val >= -0.190920 && val <= -0.097343) classRange = '-0.19 - -0.10';
+            else if (val >= -0.097343 && val <= -0.003767) classRange = '-0.10 - 0.00';
+            else if (val >= -0.003767 && val <= 0.089809) classRange = '0.00 - 0.09';
+            else return { pane: 'pane_NDTI_13', opacity: 0, fillOpacity: 0, interactive: false };
+            
+            if (currentNDTIClass !== null && currentNDTIClass !== classRange) {
+                return { pane: 'pane_NDTI_13', opacity: 0, fillOpacity: 0, interactive: false };
+            }
+            
+            if (val >= -0.378072 && val <= -0.284496) return { pane: 'pane_NDTI_13', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(247,251,255,1.0)' };
+            if (val >= -0.284496 && val <= -0.190920) return { pane: 'pane_NDTI_13', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(215,230,245,1.0)' };
+            if (val >= -0.190920 && val <= -0.097343) return { pane: 'pane_NDTI_13', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(171,198,231,1.0)' };
+            if (val >= -0.097343 && val <= -0.003767) return { pane: 'pane_NDTI_13', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(114,154,215,1.0)' };
+            if (val >= -0.003767 && val <= 0.089809) return { pane: 'pane_NDTI_13', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(57,109,198,1.0)' };
+            return {};
+        }
+        
+        function style__4_0() { return { pane: 'pane__4', opacity: 1, color: 'rgba(185,158,129,1.0)', dashArray: '4,2', weight: 1, fillOpacity: 0 }; }
+        function style__5_0() { return { pane: 'pane__5', opacity: 1, color: 'rgba(185,158,129,1.0)', weight: 1, fillOpacity: 0 }; }
+        function style__6_0() { return { pane: 'pane__6', opacity: 1, color: 'rgba(185,158,129,1.0)', weight: 2, fillOpacity: 0 }; }
+        var pattern__7_0 = new L.StripePattern({ weight: 0.6, spaceWeight: 5, color: '#fddc43', angle: 315 });
+        pattern__7_0.addTo(map);
+        function style__7_0() { return { pane: 'pane__7', stroke: false, fillOpacity: 1, fillPattern: pattern__7_0 }; }
+        function style__7_1() { return { pane: 'pane__7', opacity: 1, color: 'rgba(253,220,67,1.0)', weight: 3, fillOpacity: 0 }; }
+        function style__8_0() { return { pane: 'pane__8', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fillOpacity: 0 }; }
+        function style__9_0() { return { pane: 'pane__9', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fillOpacity: 0 }; }
+        function style__10_0() { return { pane: 'pane__10', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(137,190,215,1.0)' }; }
+        function style__11_0() { return { pane: 'pane__11', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(137,190,215,1.0)' }; }
+        function style__12_0() { return { pane: 'pane__12', opacity: 1, color: 'rgba(75,153,187,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(137,190,215,1.0)' }; }
+        function style__14_0() { return { pane: 'pane__14', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(124,173,125,1.0)' }; }
+        
+        function style__15_0(feature) {
+            var lu = feature.properties['landuse'];
+            if (hiddenLanduses[lu]) {
+                return { pane: 'pane__15', opacity: 0, fillOpacity: 0, interactive: false };
+            }
+            if (lu === 'airport') return { pane: 'pane__15', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(186,186,186,1.0)' };
+            if (lu === 'cemetery') return { pane: 'pane__15', opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(255,255,255,1.0)' };
+            if (lu === 'commercial') return { pane: 'pane__15', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(203,179,200,1.0)' };
+            if (lu === 'industrial') return { pane: 'pane__15', opacity: 1, color: 'rgba(247,247,247,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(186,186,186,1.0)' };
+            if (lu === 'residential') return { pane: 'pane__15', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(230,219,212,1.0)' };
+            if (lu === 'retail') return { pane: 'pane__15', opacity: 1, color: 'rgba(35,35,35,0.0)', weight: 1, fill: true, fillOpacity: 1, fillColor: 'rgba(203,179,200,1.0)' };
+            return {};
+        }
+        
+        function style__16_0() { return { pane: 'pane__16', opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 1, fillOpacity: 0 }; }
+        function style__17_0() { return { pane: 'pane__17', opacity: 1, color: 'rgba(0,0,0,1.0)', weight: 3, fillOpacity: 0 }; }
+        function style__17_1() { return { pane: 'pane__17', opacity: 1, color: 'rgba(239,239,239,1.0)', weight: 2, fillOpacity: 0 }; }
+        function style__18_0() { return { pane: 'pane__18', opacity: 1, color: 'rgba(0,0,0,1.0)', weight: 3, fillOpacity: 0 }; }
+        function style__18_1() { return { pane: 'pane__18', opacity: 1, color: 'rgba(239,239,239,1.0)', weight: 2, fillOpacity: 0 }; }
+        function style__19_0() { return { pane: 'pane__19', opacity: 1, color: 'rgba(0,0,0,1.0)', weight: 3, fillOpacity: 0 }; }
+        function style__19_1() { return { pane: 'pane__19', opacity: 1, color: 'rgba(239,176,95,1.0)', weight: 2, fillOpacity: 0 }; }
+        function style__20_0() { return { pane: 'pane__20', opacity: 1, color: 'rgba(0,0,0,1.0)', weight: 4, fillOpacity: 0 }; }
+        function style__20_1() { return { pane: 'pane__20', opacity: 1, color: 'rgba(239,176,95,1.0)', weight: 2, fillOpacity: 0 }; }
+        function style_1000_21_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style_1000_22_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style__23_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style__24_0() { return { fill: false, stroke: false, interactive: false }; }
+        function style__25_0() { return { pane: 'pane__25', icon: L.icon({ iconUrl: 'markers/_25.svg', iconSize: [9.12, 9.12] }) }; }
+        function style__26_0() { return { pane: 'pane__26', opacity: 1, color: 'rgba(180,105,148,1.0)', dashArray: '8,4', weight: 2, fillOpacity: 0 }; }
+        function style__27_0() { return { pane: 'pane__27', opacity: 1, color: 'rgba(207,69,94,1.0)', weight: 3, fillOpacity: 0 }; }
+
+        // Создание панелей
+        for (var i = 0; i <= 27; i++) map.createPane('pane__' + i);
+        map.createPane('pane_BSI_2');
+        map.createPane('pane_NDVI_3');
+        map.createPane('pane_NDTI_13');
+
+        // Создание слоёв
+        var layer__0 = new L.geoJson(json__0, { onEachFeature: pop__0, style: style__0_0 });
+        var layer__1 = new L.geoJson(json__1, { onEachFeature: pop__1, style: style__1_0 });
+        var layer_BSI_2 = new L.geoJson(json_BSI_2, { onEachFeature: pop_BSI_2, style: style_BSI_2_0 });
+        var layer_NDVI_3 = new L.geoJson(json_NDVI_3, { onEachFeature: pop_NDVI_3, style: style_NDVI_3_0 });
+        var layer__4 = new L.geoJson(json__4, { onEachFeature: pop__4, style: style__4_0 });
+        var layer__5 = new L.geoJson(json__5, { onEachFeature: pop__5, style: style__5_0 });
+        var layer__6 = new L.geoJson(json__6, { onEachFeature: pop__6, style: style__6_0 });
+        var layer__7 = new L.geoJson.multiStyle(json__7, { onEachFeature: pop__7, styles: [style__7_0, style__7_1] });
+        var layer__8 = new L.geoJson(json__8, { onEachFeature: pop__8, style: style__8_0 });
+        var layer__9 = new L.geoJson(json__9, { onEachFeature: pop__9, style: style__9_0 });
+        var layer__10 = new L.geoJson(json__10, { onEachFeature: pop__10, style: style__10_0 });
+        var layer__11 = new L.geoJson(json__11, { onEachFeature: pop__11, style: style__11_0 });
+        var layer__12 = new L.geoJson(json__12, { onEachFeature: pop__12, style: style__12_0 });
+        var layer_NDTI_13 = new L.geoJson(json_NDTI_13, { onEachFeature: pop_NDTI_13, style: style_NDTI_13_0 });
+        var layer__14 = new L.geoJson(json__14, { onEachFeature: pop__14, style: style__14_0 });
+        var layer__15 = new L.geoJson(json__15, { onEachFeature: pop__15, style: style__15_0 });
+        var layer__16 = new L.geoJson(json__16, { onEachFeature: pop__16, style: style__16_0 });
+        var layer__17 = new L.geoJson.multiStyle(json__17, { onEachFeature: pop__17, styles: [style__17_0, style__17_1] });
+        var layer__18 = new L.geoJson.multiStyle(json__18, { onEachFeature: pop__18, styles: [style__18_0, style__18_1] });
+        var layer__19 = new L.geoJson.multiStyle(json__19, { onEachFeature: pop__19, styles: [style__19_0, style__19_1] });
+        var layer__20 = new L.geoJson.multiStyle(json__20, { onEachFeature: pop__20, styles: [style__20_0, style__20_1] });
+        var layer_1000_21 = new L.geoJson(json_1000_21, { onEachFeature: pop_1000_21, pointToLayer: function(f, latlng) { return L.circleMarker(latlng, style_1000_21_0()); } });
+        var layer_1000_22 = new L.geoJson(json_1000_22, { onEachFeature: pop_1000_22, pointToLayer: function(f, latlng) { return L.circleMarker(latlng, style_1000_22_0()); } });
+        var layer__23 = new L.geoJson(json__23, { onEachFeature: pop__23, pointToLayer: function(f, latlng) { return L.circleMarker(latlng, style__23_0()); } });
+        var layer__24 = new L.geoJson(json__24, { onEachFeature: pop__24, pointToLayer: function(f, latlng) { return L.circleMarker(latlng, style__24_0()); } });
+        var layer__25 = new L.geoJson(json__25, { onEachFeature: pop__25, pointToLayer: function(f, latlng) { return L.marker(latlng, style__25_0()); } });
+        var layer__26 = new L.geoJson(json__26, { onEachFeature: pop__26, style: style__26_0 });
+        var layer__27 = new L.geoJson(json__27, { onEachFeature: pop__27, style: style__27_0 });
+
+        var cluster__25 = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 2 });
+        cluster__25.addLayer(layer__25);
+
+        // Добавление слоёв на карту
+        var allLayers = [layer__0, layer__1, layer_BSI_2, layer_NDVI_3, layer__4, layer__5, layer__6, layer__7, layer__8, layer__9, layer__10, layer__11, layer__12, layer_NDTI_13, layer__14, layer__15, layer__16, layer__17, layer__18, layer__19, layer__20, layer_1000_21, layer_1000_22, layer__23, layer__24];
+        allLayers.forEach(function(l) { bounds_group.addLayer(l); map.addLayer(l); });
+        map.addLayer(layer__26);
+        map.addLayer(layer__27);
+        cluster__25.addTo(map);
+
+        // Подписи на карте
+        var i = 0;
+        layer_1000_21.eachLayer(function(layer) {
+            if (layer.feature.properties['name']) {
+                layer.bindTooltip('<div class="css_1000_21">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16] });
+                if (typeof addLabel === 'function') addLabel(layer, i);
+                i++;
+            }
+        });
+        layer_1000_22.eachLayer(function(layer) {
+            if (layer.feature.properties['name']) {
+                layer.bindTooltip('<div class="css_1000_22">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16] });
+                if (typeof addLabel === 'function') addLabel(layer, i);
+                i++;
+            }
+        });
+        layer__23.eachLayer(function(layer) {
+            if (layer.feature.properties['name']) {
+                layer.bindTooltip('<div class="css__23">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16] });
+                if (typeof addLabel === 'function') addLabel(layer, i);
+                i++;
+            }
+        });
+        layer__24.eachLayer(function(layer) {
+            if (layer.feature.properties['name']) {
+                layer.bindTooltip('<div class="css__24">' + layer.feature.properties['name'] + '</div>', { permanent: true, offset: [-0, -16] });
+                if (typeof addLabel === 'function') addLabel(layer, i);
+                i++;
+            }
+        });
+
+        function resetLabels(labelLayers) {
+            if (typeof labelgun !== 'undefined' && labelLayers) {
+                labelLayers.forEach(function(l) {
+                    if (l.eachLayer) {
+                        l.eachLayer(function(ll) { if (typeof ll.updateLabel === 'function') ll.updateLabel(); });
+                    } else if (typeof l.updateLabel === 'function') l.updateLabel();
+                });
+            }
+        }
+
+        map.on("zoomend", function() { resetLabels([layer_1000_21, layer_1000_22, layer__23, layer__24]); });
+        map.on("layeradd", function() { resetLabels([layer_1000_21, layer_1000_22, layer__23, layer__24]); });
+        map.on("layerremove", function() { resetLabels([layer_1000_21, layer_1000_22, layer__23, layer__24]); });
+
+        // Функции переключения слоёв
+        function toggleLayer(layer, legendItem, classOrLanduse, isLanduse) {
+            if (isLanduse) {
+                // Для слоя земель населенных пунктов
+                if (hiddenLanduses[classOrLanduse]) {
+                    delete hiddenLanduses[classOrLanduse];
+                    if (legendItem) legendItem.classList.remove('layer-off');
+                } else {
+                    hiddenLanduses[classOrLanduse] = true;
+                    if (legendItem) legendItem.classList.add('layer-off');
+                }
+                layer__15.clearLayers();
+                layer__15.addData(json__15);
+                return;
+            }
+            
+            // Для индексных слоёв
+            if (layer === layer_NDVI_3 && classOrLanduse) {
+                if (currentNDVIClass === classOrLanduse) {
+                    currentNDVIClass = null;
+                    if (legendItem) legendItem.classList.remove('layer-off');
+                } else {
+                    currentNDVIClass = classOrLanduse;
+                    document.querySelectorAll('.legend-item[data-layer="NDVI_3"]').forEach(function(item) {
+                        item.classList.remove('layer-off');
+                    });
+                    if (legendItem) legendItem.classList.add('layer-off');
+                }
+                layer_NDVI_3.clearLayers();
+                layer_NDVI_3.addData(json_NDVI_3);
+                return;
+            }
+            if (layer === layer_NDTI_13 && classOrLanduse) {
+                if (currentNDTIClass === classOrLanduse) {
+                    currentNDTIClass = null;
+                    if (legendItem) legendItem.classList.remove('layer-off');
+                } else {
+                    currentNDTIClass = classOrLanduse;
+                    document.querySelectorAll('.legend-item[data-layer="NDTI_13"]').forEach(function(item) {
+                        item.classList.remove('layer-off');
+                    });
+                    if (legendItem) legendItem.classList.add('layer-off');
+                }
+                layer_NDTI_13.clearLayers();
+                layer_NDTI_13.addData(json_NDTI_13);
+                return;
+            }
+            if (layer === layer_BSI_2 && classOrLanduse) {
+                if (currentBSIClass === classOrLanduse) {
+                    currentBSIClass = null;
+                    if (legendItem) legendItem.classList.remove('layer-off');
+                } else {
+                    currentBSIClass = classOrLanduse;
+                    document.querySelectorAll('.legend-item[data-layer="BSI_2"]').forEach(function(item) {
+                        item.classList.remove('layer-off');
+                    });
+                    if (legendItem) legendItem.classList.add('layer-off');
+                }
+                layer_BSI_2.clearLayers();
+                layer_BSI_2.addData(json_BSI_2);
+                return;
+            }
+            
+            // Обычное переключение слоя
+            if (map.hasLayer(layer)) {
+                map.removeLayer(layer);
+                if (legendItem) legendItem.classList.add('layer-off');
+            } else {
+                map.addLayer(layer);
+                if (legendItem) legendItem.classList.remove('layer-off');
+            }
+        }
+
+        // Назначение обработчиков
+        document.querySelectorAll('.legend-item[data-layer]').forEach(function(item) {
+            var layerName = item.getAttribute('data-layer');
+            var classOrLanduse = item.getAttribute('data-class') || item.getAttribute('data-landuse');
+            var isLanduse = item.hasAttribute('data-landuse');
+            var layer = null;
+            
+            if (layerName === 'layer__0') layer = layer__0;
+            else if (layerName === 'layer__1') layer = layer__1;
+            else if (layerName === 'BSI_2') layer = layer_BSI_2;
+            else if (layerName === 'NDVI_3') layer = layer_NDVI_3;
+            else if (layerName === 'NDTI_13') layer = layer_NDTI_13;
+            else if (layerName === 'layer__4') layer = layer__4;
+            else if (layerName === 'layer__5') layer = layer__5;
+            else if (layerName === 'layer__6') layer = layer__6;
+            else if (layerName === 'layer__7') layer = layer__7;
+            else if (layerName === 'layer__8') layer = layer__8;
+            else if (layerName === 'layer__9') layer = layer__9;
+            else if (layerName === 'layer__10') layer = layer__10;
+            else if (layerName === 'layer__11') layer = layer__11;
+            else if (layerName === 'layer__12') layer = layer__12;
+            else if (layerName === 'layer__14') layer = layer__14;
+            else if (layerName === 'layer__15') layer = layer__15;
+            else if (layerName === 'layer__16') layer = layer__16;
+            else if (layerName === 'layer__17') layer = layer__17;
+            else if (layerName === 'layer__18') layer = layer__18;
+            else if (layerName === 'layer__19') layer = layer__19;
+            else if (layerName === 'layer__20') layer = layer__20;
+            else if (layerName === '1000_21') layer = layer_1000_21;
+            else if (layerName === '1000_22') layer = layer_1000_22;
+            else if (layerName === 'layer__23') layer = layer__23;
+            else if (layerName === 'layer__24') layer = layer__24;
+            else if (layerName === 'layer__25') layer = layer__25;
+            else if (layerName === 'cluster__25') layer = cluster__25;
+            else if (layerName === 'layer__26') layer = layer__26;
+            else if (layerName === 'layer__27') layer = layer__27;
+            
+            if (layer) {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleLayer(layer, item, classOrLanduse, isLanduse);
+                });
+            }
+        });
+
+        // Управление индексами
+        function hideAllInfoBlocks() {
+            document.getElementById('infoNDVI').classList.remove('show');
+            document.getElementById('infoNDTI').classList.remove('show');
+            document.getElementById('infoBSI').classList.remove('show');
+        }
+
+        function showOnlyIndex(activeLayer, layersToHide, infoBlockId) {
+            layersToHide.forEach(function(layer) { if (map.hasLayer(layer)) map.removeLayer(layer); });
+            if (!map.hasLayer(activeLayer)) map.addLayer(activeLayer);
+            hideAllInfoBlocks();
+            document.getElementById(infoBlockId).classList.add('show');
+            // Сбрасываем фильтры классов
+            if (activeLayer === layer_NDVI_3) {
+                currentNDVIClass = null;
+                layer_NDVI_3.clearLayers();
+                layer_NDVI_3.addData(json_NDVI_3);
+                document.querySelectorAll('.legend-item[data-layer="NDVI_3"]').forEach(function(item) { item.classList.remove('layer-off'); });
+            } else if (activeLayer === layer_NDTI_13) {
+                currentNDTIClass = null;
+                layer_NDTI_13.clearLayers();
+                layer_NDTI_13.addData(json_NDTI_13);
+                document.querySelectorAll('.legend-item[data-layer="NDTI_13"]').forEach(function(item) { item.classList.remove('layer-off'); });
+            } else if (activeLayer === layer_BSI_2) {
+                currentBSIClass = null;
+                layer_BSI_2.clearLayers();
+                layer_BSI_2.addData(json_BSI_2);
+                document.querySelectorAll('.legend-item[data-layer="BSI_2"]').forEach(function(item) { item.classList.remove('layer-off'); });
+            }
+        }
+
+        function showAllIndexes() {
+            if (!map.hasLayer(layer_BSI_2)) map.addLayer(layer_BSI_2);
+            if (!map.hasLayer(layer_NDVI_3)) map.addLayer(layer_NDVI_3);
+            if (!map.hasLayer(layer_NDTI_13)) map.addLayer(layer_NDTI_13);
+            hideAllInfoBlocks();
+            currentNDVIClass = null;
+            currentNDTIClass = null;
+            currentBSIClass = null;
+            layer_NDVI_3.clearLayers(); layer_NDVI_3.addData(json_NDVI_3);
+            layer_NDTI_13.clearLayers(); layer_NDTI_13.addData(json_NDTI_13);
+            layer_BSI_2.clearLayers(); layer_BSI_2.addData(json_BSI_2);
+            document.querySelectorAll('.legend-item[data-layer="NDVI_3"], .legend-item[data-layer="NDTI_13"], .legend-item[data-layer="BSI_2"]').forEach(function(item) { item.classList.remove('layer-off'); });
+        }
+
+        document.getElementById('btnNDVI').addEventListener('click', function() { showOnlyIndex(layer_NDVI_3, [layer_BSI_2, layer_NDTI_13], 'infoNDVI'); });
+        document.getElementById('btnNDTI').addEventListener('click', function() { showOnlyIndex(layer_NDTI_13, [layer_BSI_2, layer_NDVI_3], 'infoNDTI'); });
+        document.getElementById('btnBSI').addEventListener('click', function() { showOnlyIndex(layer_BSI_2, [layer_NDVI_3, layer_NDTI_13], 'infoBSI'); });
+        document.getElementById('btnReset').addEventListener('click', showAllIndexes);
+
+        // Закрытие закреплённого попапа по Esc
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && fixedPopup) { map.closePopup(fixedPopup); fixedPopup = null; } });
+        map.on('click', function(e) { if (fixedPopup && e.originalEvent && !e.originalEvent.target.closest('.leaflet-popup')) { map.closePopup(fixedPopup); fixedPopup = null; } });
+
+        // Скрытие стандартного дерева слоёв
+        setTimeout(function() { var lc = document.querySelector('.leaflet-control-layers'); if (lc) lc.style.display = 'none'; }, 100);
+        
+        setBounds();
+        </script>
+    </body>
+</html>

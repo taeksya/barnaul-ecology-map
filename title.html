@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экологическая карта Барнаула и Новоалтайска | 2023</title>
+    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/avenir-next-lt-pro');
+    </style>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        @media (prefers-reduced-motion: no-preference) {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
+
+  
+        * {
+            scroll-margin-top: 20px;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: 'Avenir Next', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8faf9 0%, #edf7f0 100%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, .hero-title h1, .hero-title .year,
+        .text-column h2, .content-block h3, .diagram-title,
+        .highlight-box strong, .section-title {
+            font-family: 'Avenir Next', 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+
+        .hero-title h1 {
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .hero-section {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: brightness(0.9);
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom, 
+                rgba(0, 0, 0, 0.2) 0%,
+                rgba(0, 0, 0, 0.1) 20%,
+                transparent 30%,
+                transparent 70%,
+                rgba(0, 0, 0, 0.1) 80%,
+                rgba(0, 0, 0, 0.2) 100%
+            );
+            z-index: 1;
+        }
+
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom, transparent, #f8faf9);
+            z-index: 2;
+        }
+
+        .hero-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 3;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        .hero-title h1 {
+            font-weight: 700;
+            font-size: 3.8rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            line-height: 1.1;
+        }
+
+        .hero-title .year {
+            font-weight: 600;
+            font-size: 2.2rem;
+            opacity: 0.95;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+        }
+
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-down:hover {
+            bottom: 30px;
+        }
+
+        .scroll-arrow {
+            width: 40px;
+            height: 70px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-down:hover .scroll-arrow {
+            border-color: #4a7c59;
+            box-shadow: 0 0 20px rgba(74, 124, 89, 0.5);
+        }
+
+        .scroll-arrow::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: scrollDown 2s infinite;
+        }
+
+        .scroll-down:hover .scroll-arrow::before {
+            background: #4a7c59;
+        }
+
+        @keyframes scrollDown {
+            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            80% { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 0; }
+        }
+
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            padding: 80px 0;
+            position: relative;
+        }
+
+
+        .text-column {
+            padding-right: 40px;
+        }
+
+
+        .section-title {
+            font-weight: 600;
+            font-size: 2.5rem;
+            color: #2c5530;
+            margin-bottom: 40px;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .section-title::before {
+            content: '🌿';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+        }
+
+
+        .climate-title {
+            color: #2a5c8a;
+        }
+
+        .climate-title::before {
+            content: '☀️';
+        }
+
+
+        .ecology-title {
+            color: #2c5530;
+        }
+
+        .ecology-title::before {
+            content: '🌍';
+        }
+
+
+        .text-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #444;
+            position: relative;
+            padding-left: 40px;
+            padding-right: 20px;
+            text-align: justify;
+        }
+
+        .text-content p::before {
+            content: '🍃';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            font-size: 1.3rem;
+            opacity: 0.7;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(138, 201, 155, 0.1), rgba(74, 124, 89, 0.05));
+            padding: 35px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border-left: 5px solid #8ac99b;
+            position: relative;
+            padding-left: 60px;
+            text-align: justify;
+        }
+
+        .highlight-box::before {
+            content: '📍';
+            position: absolute;
+            left: 25px;
+            top: 35px;
+            font-size: 1.8rem;
+        }
+
+        .highlight-box strong {
+            font-weight: 600;
+            color: #2c5530;
+            font-size: 1.3rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+
+        .full-width-paragraph {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-top: 30px;
+            margin-bottom: 0;
+            color: #444;
+            position: relative;
+            padding-left: 40px;
+            text-align: justify;
+        }
+
+        .full-width-paragraph::before {
+            content: '🍃';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            font-size: 1.3rem;
+            opacity: 0.7;
+        }
+
+
+        .climate-section {
+            width: 100%;
+            padding: 60px 0;
+            background: linear-gradient(135deg, rgba(74, 124, 137, 0.05), rgba(42, 92, 138, 0.02));
+            margin: 60px 0;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .climate-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(74, 124, 137, 0.1) 50%, transparent 100%);
+            z-index: -1;
+        }
+
+        .climate-content {
+            max-width: 2600px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+        }
+
+        .climate-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 50px;
+        }
+
+        .climate-link-container {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .climate-link {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, rgba(74, 124, 137, 0.15), rgba(42, 92, 138, 0.1));
+            color: #2a5c8a;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            border: 1px solid rgba(42, 92, 138, 0.3);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .climate-link:hover {
+            background: linear-gradient(135deg, rgba(74, 124, 137, 0.25), rgba(42, 92, 138, 0.2));
+            color: #2a5c8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: rgba(42, 92, 138, 0.5);
+        }
+
+
+        .climate-charts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+
+        .wind-roses-row {
+            display: flex;
+            justify-content: center;
+            gap: 80px; 
+            flex-wrap: wrap;
+            margin: 0 auto;
+            max-width: 1100px;
+        }
+
+    
+        .wind-rose-chart {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            min-width: 320px;
+            flex: 1;
+            max-width: 450px; 
+            transition: transform 0.3s ease;
+        }
+
+        .wind-rose-chart:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .wind-rose-title {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #2a5c8a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #5dcae2;
+        }
+
+        .wind-rose-container {
+            width: 100%;
+            height: 300px; 
+            position: relative;
+            margin: 0 auto;
+        }
+
+
+        .temperature-precipitation-row {
+            display: flex;
+            justify-content: center;
+            gap: 80px; 
+            flex-wrap: wrap;
+            margin: 0 auto;
+            max-width: 1400px; 
+        }
+
+ 
+        .temperature-chart {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 650px; 
+            max-width: 700px; 
+            transition: transform 0.3s ease;
+        }
+
+        .temperature-chart:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .temperature-title {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #2a5c8a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #5dcae2;
+            text-align: center;
+        }
+
+        .temperature-container {
+            width: 100%;
+            height: 300px; 
+            position: relative;
+        }
+
+
+        .precipitation-chart {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 650px;
+            max-width: 700px;
+            transition: transform 0.3s ease;
+        }
+
+        .precipitation-chart:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .precipitation-title {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #2a5c8a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #5dcae2;
+            text-align: center;
+        }
+
+        .precipitation-container {
+            width: 100%;
+            height: 300px; 
+            position: relative;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .wind-rose-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .wind-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        .wind-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+
+        .calm-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .map-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .map-container {
+            position: relative;
+        }
+
+        .map-wrapper {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(74, 124, 89, 0.1);
+        }
+
+        .map-wrapper:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .svg-map {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.8s ease;
+            cursor: pointer;
+        }
+
+        .svg-map:hover {
+            transform: scale(1.05);
+        }
+
+ 
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+            align-items: stretch;
+        }
+
+
+        .content-block {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            margin-top: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(74, 124, 89, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .content-block h3 {
+            font-weight: 600;
+            font-size: 2rem;
+            color: #2c5530;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .content-block h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #8ac99b, #4a7c59);
+            border-radius: 2px;
+        }
+
+        .block-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+
+        .pollution-section .block-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .pollution-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 0;
+            color: #555;
+            text-align: justify;
+        }
+
+        .pollution-text p {
+            margin-bottom: 15px;
+        }
+
+        .pollution-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .pollution-section {
+            grid-column: 1 / -1 !important;
+            width: 100% !important;
+        }
+
+        .pollution-section .integral-map-container {
+            max-width: 1000px !important;
+            margin: 0 auto !important;
+        }
+
+        .pollution-section .integral-map-image {
+            max-height: 500px !important;
+            width: auto !important;
+            margin: 0 auto !important;
+        }
+
+        @media (max-width: 768px) {
+            .pollution-section .integral-map-image {
+                max-height: 350px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pollution-section .integral-map-image {
+                max-height: 250px !important;
+            }
+        }
+        
+
+        .diagram-container {
+            width: 100%;
+            padding: 10px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #2c5530;
+            margin-bottom: 15px;
+            text-align: center;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .diagram {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px; 
+            width: 50%; 
+            height: 180px;
+            margin: 0 auto;
+        }
+
+        .diagram-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .district-name {
+            font-weight: 600;
+            color: #2c5530;
+            margin-bottom: 10px;
+            text-align: center;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+
+        .bars-container {
+            width: 100%;
+            height: 120px; 
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 5px; 
+            padding: 0 5px;
+            flex-grow: 1;
+        }
+
+        .bar {
+            width: 23%; 
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            transition: height 1s ease-out, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 0.9;
+            transform: scaleX(1.1);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #333;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+
+        .bar:hover .bar-value {
+            opacity: 1;
+        }
+
+
+        .bar-dust { background: linear-gradient(to top, #c2f2aaff, rgb(165, 214, 141)); }
+        .bar-no2 { background: linear-gradient(to top, #a8d6dfff, rgb(150, 203, 214)); }
+        .bar-co { background: linear-gradient(to top, #dbd881ff, rgb(185, 182, 105)); }
+        .bar-carbon { background: linear-gradient(to top, #c1726fff, rgb(152, 87, 85)); }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+        }
+
+
+        .unified-nature-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            margin-top: 20px;
+            padding: 40px;
+            width: 100%;
+            border: 1px solid rgba(74, 124, 89, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .unified-nature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        .nature-subsection {
+            margin-bottom: 40px;
+        }
+        .nature-subsection:last-of-type {
+            margin-bottom: 0;
+        }
+        .nature-subsection h3 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: #2c5530;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #8ac99b;
+            display: inline-block;
+        }
+        .nature-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #555;
+        }
+        .nature-text p {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 40px;
+            text-align: justify;
+        }
+        .nature-text p::before {
+            content: '🌱';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            font-size: 1.3rem;
+            opacity: 0.7;
+        }
+        .hydrology-subsection .nature-text p::before {
+            content: '💧';
+        }
+        
+
+        .pie-charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+            padding: 0 10px;
+        }
+
+        .pie-chart-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pie-title {
+            font-weight: 600;
+            color: #2c5530;
+            text-align: center;
+            font-size: 1rem;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+        }
+
+        .pie-chart-wrapper {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .pie-chart-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .pie-chart-simple {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pie-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(-50%) translateY(-10px);
+            top: -70px;
+            left: 50%;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .pie-tooltip.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .pie-legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .pie-legend-item:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pie-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+        }
+
+
+        .ecology-section {
+            margin-top: 60px;
+            position: relative;
+        }
+
+
+        .ecology-section::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #8ac99b, #4a7c59);
+            border-radius: 2px;
+        }
+
+        .integral-map-section {
+            width: 100%;
+            padding: 60px 0;
+            margin: 60px 0;
+            text-align: center;
+            position: relative;
+        }
+
+
+        .integral-title {
+            color: #4a7c59;
+            margin-bottom: 40px;
+        }
+
+        .integral-title::before {
+            content: '🗺️';
+        }
+
+        .integral-map-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
+        }
+
+        .integral-map-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .integral-map-link {
+            display: block;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .integral-map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .integral-map-link:hover .integral-map-image {
+            transform: scale(1.05);
+        }
+
+        .integral-map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 70%, rgba(74, 124, 89, 0.3) 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 30px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .integral-map-link:hover .integral-map-overlay {
+            opacity: 1;
+        }
+
+        .overlay-text {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #2c5530;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .integral-map-link:hover .overlay-text {
+            transform: translateY(0);
+        }
+
+        .overlay-text i {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 1400px) {
+            .container { padding: 0 30px; }
+            .hero-title h1 { font-size: 3.2rem; }
+            .map-wrapper { height: 500px; }
+            .diagram { height: 170px; }
+            .bars-container { height: 110px; }
+            .pie-chart-wrapper { width: 160px; height: 160px; }
+            .temperature-precipitation-row { gap: 60px; }
+            .temperature-chart, .precipitation-chart { min-width: 550px; }
+            .wind-roses-row { gap: 60px; }
+        }
+
+        @media (max-width: 1200px) {
+            .main-content { grid-template-columns: 1fr; gap: 40px; }
+            .text-column { padding-right: 0; }
+            .hero-title h1 { font-size: 2.8rem; }
+            .content-grid { grid-template-columns: 1fr; gap: 40px; }
+            .diagram { height: 160px; gap: 10px; }
+            .bars-container { height: 100px; }
+            .district-name { font-size: 0.85rem; height: 45px; }
+            .pie-charts-container { gap: 20px; }
+            .pie-chart-wrapper { width: 140px; height: 140px; }
+            .temperature-precipitation-row { flex-direction: column; align-items: center; }
+            .temperature-chart, .precipitation-chart { min-width: 100%; max-width: 800px; }
+            .wind-roses-row { gap: 50px; }
+        }
+
+        @media (max-width: 992px) {
+            .hero-title { padding: 30px; }
+            .hero-title h1 { font-size: 2.4rem; }
+            .hero-title .year { font-size: 1.8rem; }
+            .map-wrapper { height: 450px; }
+            .text-column h2, .section-title { font-size: 2rem; }
+            .climate-content { padding: 0 30px; }
+            .content-block { padding: 30px; }
+            .diagram { height: 150px; gap: 8px; }
+            .bars-container { height: 90px; }
+            .district-name { font-size: 0.8rem; height: 40px; }
+            .bar-value { font-size: 0.7rem; top: -20px; }
+            .pie-charts-container { grid-template-columns: repeat(3, 1fr); gap: 15px; }
+            .pie-chart-wrapper { width: 120px; height: 120px; }
+            .pie-title { font-size: 0.9rem; height: 30px; }
+            .wind-rose-container, .temperature-container, .precipitation-container { height: 280px; }
+            .wind-roses-row { gap: 40px; }
+            .wind-rose-chart { min-width: 300px; }
+            .temperature-chart, .precipitation-chart { min-width: 100%; max-width: 700px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .hero-title { width: 95%; padding: 25px; }
+            .hero-title h1 { font-size: 2rem; }
+            .main-content { padding: 50px 0; }
+            .map-wrapper { height: 350px; }
+            .content-block { padding: 25px 20px; }
+            .diagram { gap: 6px; height: 140px; }
+            .bars-container { height: 80px; }
+            .climate-content { padding: 0 20px; }
+            .full-width-paragraph { padding-left: 35px; }
+            .legend { gap: 10px; }
+            .content-block h3 { font-size: 1.8rem; }
+            .district-name { font-size: 0.75rem; height: 35px; }
+            .pie-charts-container { grid-template-columns: 1fr; gap: 35px; max-width: 300px; margin: 20px auto; }
+            .pie-chart-wrapper { width: 180px; height: 180px; }
+            .pie-title { font-size: 1rem; height: auto; margin-bottom: 5px; }
+            .pie-legend { gap: 15px; }
+            .pie-legend-item { font-size: 0.85rem; }
+            .wind-rose-title, .temperature-title, .precipitation-title { font-size: 1.2rem; }
+            .wind-roses-row { flex-direction: column; align-items: center; gap: 40px; }
+            .wind-rose-chart { min-width: 100%; max-width: 450px; }
+            .temperature-chart, .precipitation-chart { min-width: 100%; }
+            .wind-rose-container, .temperature-container, .precipitation-container { height: 250px; }
+            .integral-map-section { padding: 40px 0; margin: 40px 0; }
+            .integral-map-container { max-width: 100%; border-radius: 15px; }
+            .overlay-text { padding: 12px 25px; font-size: 0.9rem; }
+            .unified-nature-card { padding: 25px 20px; }
+            .nature-subsection h3 { font-size: 1.5rem; }
+        }
+
+        @media (max-width: 600px) {
+            .diagram { grid-template-columns: repeat(5, 1fr); height: 130px; gap: 4px; }
+            .bars-container { height: 70px; gap: 3px; }
+            .bar { width: 22%; }
+            .district-name { font-size: 0.7rem; padding: 0 2px; height: 30px; }
+            .bar-value { font-size: 0.65rem; top: -18px; }
+            .legend-item { font-size: 0.75rem; }
+            .wind-rose-container, .temperature-container, .precipitation-container { height: 220px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title h1 { font-size: 1.7rem; }
+            .text-column h2, .section-title { font-size: 1.7rem; padding-left: 40px; }
+            .text-content p { font-size: 1.1rem; padding-left: 35px; }
+            .map-wrapper { height: 300px; }
+            .full-width-paragraph { padding-left: 35px; }
+            .content-block h3 { font-size: 1.6rem; }
+            .diagram { height: 120px; }
+            .bars-container { height: 65px; }
+            .pollution-text { font-size: 1rem; }
+            .district-name { font-size: 0.65rem; }
+            .pie-charts-container { max-width: 250px; }
+            .pie-chart-wrapper { width: 150px; height: 150px; }
+            .pie-title { font-size: 0.9rem; }
+            .wind-rose-container, .temperature-container, .precipitation-container { height: 200px; }
+            .wind-rose-chart, .temperature-chart, .precipitation-chart { padding: 20px 15px; }
+            .integral-map-section { padding: 30px 0; margin: 30px 0; }
+            .integral-title { margin-bottom: 30px; }
+            .overlay-text { padding: 10px 20px; font-size: 0.85rem; }
+            .overlay-text i { font-size: 1rem; }
+            .unified-nature-card { padding: 20px 15px; }
+            .nature-subsection h3 { font-size: 1.3rem; }
+            .nature-text p { font-size: 1rem; padding-left: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero-section">
+        <div class="hero-image">
+            <img src="barnaul4.jpeg" alt="Вид на город Барнаул">
+            <div class="hero-title">
+                <h1>Карта экологического состояния<br>города Барнаула</h1>
+                <span class="year">на 2023 год</span>
+            </div>
+        </div>
+        
+
+        <div class="scroll-down" onclick="scrollToContent()">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+
+    <div class="container">
+        <div class="main-content">
+
+            <div class="text-column">
+                <h2 class="section-title">Барнаул – административный центр Алтайского края</h2>
+                
+                <div class="text-content">
+                    <p>Барнаул – город краевого значения с населением 688 818 человек, образует муниципальное образование со статусом городского округа, в который входит Барнаул и еще 25 населенных пунктов.</p>
+                    
+                    <div class="highlight-box">
+                        <p><strong>Город разделен на 5 районов:</strong><br>
+                        Железнодорожный, Центральный, Ленинский, Октябрьский и Индустриальный.</p>
+                    </div>
+                    
+                    <p>Территория городского округа граничит с Тальменским, Первомайским, Калманским и Павловским районами, вместе с Новоалтайском образует Барнаульскую агломерацию – важнейший экономический, транспортный и культурный центр Западной Сибири.</p>
+                </div>
+            </div>
+
+
+            <div class="map-column">
+                <!-- Карта -->
+                <div class="map-container">
+                    <div class="map-wrapper">
+                        <object type="image/svg+xml" data="Map of Altay.svg" class="svg-map">
+                            Ваш браузер не поддерживает SVG. Загрузите современный браузер.
+                        </object>
+                    </div>
+                </div>
+                
+
+                <p class="full-width-paragraph">
+                    Город является крупным промышленным, научным и образовательным центром, где сосредоточены предприятия машиностроения, химической, пищевой и легкой промышленности, а также ведущие вузы и исследовательские институты региона. Барнаул – крупный транспортный узел, через который проходят федеральные автомагистрали «Чуйский тракт», начало трассы Барнаул-Рубцовск, переходящая в азиатский маршрут. В 17 км от города находится международный аэропорт имени Г.С. Титова.
+                </p>
+            </div>
+        </div>
+        
+
+        <h2 class="section-title climate-title">Климат Барнаула</h2>
+        
+
+        <section class="climate-section">
+            <div class="climate-content">
+                <div class="climate-text">
+                    <p>Климат города – умеренный континентальный, определяемый географическим положением города на юго-востоке Западной Сибири. Открытость территории воздействию со стороны гор Алтая, Северного Ледовитого океана и полупустынных районов Средней Азии создает возможность поступления различных по свойствам воздушных масс, что способствует значительной контрастности погодных условий.</p>
+                    <p>Для Барнаула характерна морозная, умеренно-суровая среднеснежная зима и теплое лето. Самый холодный месяц года – январь (средняя температура минус 17,5 °C), самый теплый – июль (19,8 °C). Разница температур этих месяцев (годовая амплитуда) достигает 37,3 °С.</p>
+                    <p>В течение года чаще всего наблюдаются юго-западные, западные и южные ветра. Преобладание юго-западных ветров проявляется во все сезоны года, но при переходе от зимы к лету увеличивается повторяемость ветров северных направлений. Средняя скорость ветра 2 м/с, зимой – 1,8 м/с, летом – 1,6 м/с.</p>
+                </div>
+                
+
+                <div class="climate-charts-grid">
+
+                    <div class="wind-roses-row">
+                        <div class="wind-rose-chart">
+                            <div class="wind-rose-title">Роза ветров за январь</div>
+                            <div class="wind-rose-container" id="windRoseJanuary"></div>
+
+                            <div class="climate-link-container">
+                                <a href="https://lakka-sails.ru/winds/29838#january/total" target="_blank" class="climate-link">
+                                    Подробнее
+                                </a>
+                            </div>
+                            <div class="wind-rose-legend">
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #1a5276;"></div>
+                                    <span>1-2 м/с</span>
+                                </div>
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #629cc3;"></div>
+                                    <span>3-4 м/с</span>
+                                </div>
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #5dcae2;"></div>
+                                    <span>5-6 м/с</span>
+                                </div>
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #85e9cd;"></div>
+                                    <span>7-8 м/с</span>
+                                </div>
+                                <div class="calm-legend-item">
+                                    <span>Штиль: 29%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wind-rose-chart">
+                            <div class="wind-rose-title">Роза ветров за июль</div>
+                            <div class="wind-rose-container" id="windRoseJuly"></div>
+
+                            <div class="climate-link-container">
+                                <a href="https://lakka-sails.ru/winds/29838#july/total" target="_blank" class="climate-link">
+                                    Подробнее
+                                </a>
+                            </div>
+                            <div class="wind-rose-legend">
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #1a5276;"></div>
+                                    <span>1-2 м/с</span>
+                                </div>
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #629cc3;"></div>
+                                    <span>3-4 м/с</span>
+                                </div>
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #5dcae2;"></div>
+                                    <span>5-6 м/с</span>
+                                </div>
+                                <div class="wind-legend-item">
+                                    <div class="wind-legend-color" style="background-color: #85e9cd;"></div>
+                                    <span>7-8 м/с</span>
+                                </div>
+                                <div class="calm-legend-item">
+                                    <span>Штиль: 18%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="temperature-precipitation-row">
+                        <div class="temperature-chart">
+                            <div class="temperature-title">Температура по месяцам (°C)</div>
+                            <div class="temperature-container" id="temperatureChart"></div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                                    <span>Максимум</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #3498db;"></div>
+                                    <span>Днем</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #2c5530;"></div>
+                                    <span>Средняя</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #9b59b6;"></div>
+                                    <span>Ночью</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #34495e;"></div>
+                                    <span>Минимум</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="precipitation-chart">
+                            <div class="precipitation-title">Осадки по месяцам</div>
+                            <div class="precipitation-container" id="precipitationChart"></div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #3498db;"></div>
+                                    <span>Осадки (мм)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #2ecc71;"></div>
+                                    <span>Дни с осадками</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #f1c40f;"></div>
+                                    <span>Дни без осадков</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+
+        <div class="ecology-section">
+            <h2 class="section-title ecology-title">Экологическая обстановка города</h2>
+            
+
+            <div class="content-grid">
+
+                <div class="content-block pollution-section" style="grid-column: 1 / -1; width: 100%;">
+                    <h3>Атмосферное загрязнение города Барнаула</h3>
+                    
+                    <div class="block-content">
+                        <div class="pollution-text">
+                            <p>Уровень загрязнения атмосферного воздуха города в 2019–2023 гг. оценивался как высокий, в 2017–2018 гг. – очень высокий, в 2016 г. – высокий, в 2015 г. – повышенный, 2009–2014 гг. – высокий.</p>
+                            <p>Основные источники загрязнения воздуха города – предприятия теплоэнергетики, машиностроения, нефтехимической и пищевой промышленности и автотранспорт.</p>
+                            <p>Вещества, определяющие уровень загрязнения атмосферы города, в 2023 г.: формальдегид, взвешенные вещества, бензапирен, азота диоксид, никель.</p>
+                        </div>
+
+
+                        <div class="diagram-title">Распределение загрязняющих веществ по районам Барнаула (%)</div>
+                        <div class="diagram-container">
+                            <div class="diagram" id="pollutionDiagram">
+
+                            </div>
+                        </div>
+
+
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color bar-dust"></div>
+                                <span>Взвешенные вещества</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bar-no2"></div>
+                                <span>NO₂ (Диоксид азота)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bar-co"></div>
+                                <span>CO (Оксид углерода)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color bar-carbon"></div>
+                                <span>C (Углерод, сажа)</span>
+                            </div>
+                        </div>
+                        
+
+                        <div style="margin-top: 40px; text-align: center; width: 100%;">
+                            <div class="integral-map-container" style="max-width: 1000px; margin: 0 auto;">
+                                <a href="atmosphere/index.html" class="integral-map-link">
+                                    <img src="atmosphere.svg" alt="Карта объектов загрязнителей города Барнаула" class="integral-map-image" style="max-height: 500px; width: auto; margin: 0 auto;">
+                                    <div class="integral-map-overlay">
+                                        <div class="overlay-text">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            <span>Открыть карту объектов загрязнетелей города Барнаула</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="unified-nature-card">
+
+                <div class="nature-subsection">
+                    <h3>Растительность Барнаула</h3>
+                    <div class="nature-text">
+                        <p>Растительность Барнаула и его окрестностей относится к подзоне южной лесостепи. Коренная растительность представлена степными, лесными и пойменно-луговыми типами, здесь распространены злаки и разнотравье. Почвы почти полностью распаханы или угнетены хозяйственной деятельностью и сохранились лишь на склонах балок, логов и на выгонах близ селений.</p>
+                        <p>Среди городской застройки растительность представлена главным образом искусственными насаждениями: парками, скверами и бульварами, которые располагаются у общественных зданий и по осям главных улиц.</p>
+                        <p>Под воздействием мощного антропогенного фактора (промышленность, транспорт, строительство, рекреация, сбор лекарственных и декоративных растений, браконьерские порубки) растительный покров Барнаула существенно деградирует, и естественные травянистые сообщества замещаются рудеральными (сорными). Доля сорных растений составляет 37 % (в крае – 24,5 %).</p>
+                        <p>Необратимые изменения происходят на кромке бора, вблизи селитебной зоны, там возобновление деревьев подавляется, травяной покров изрежен, флористический состав обеднен.</p>
+                    </div>
+                </div>
+                
+
+                <div class="nature-subsection">
+                    <h3>Почвы Барнаула</h3>
+                    <div class="nature-text">
+                        <p>Барнаул находится в приобской зоне, где преобладают черноземы обыкновенные, среднегумусные, среднемощные, суглинистые.</p>
+                        <p>Это зона более устойчивых урожаев зерновых и кормовых культур, сахарной свеклы, картофеля и овощей. Мощность гумусового слоя колеблется в пределах 40‒50 см.</p>
+                        <p>Несмотря на высокое естественное плодородие алтайских почв, использование их в сельскохозяйственном производстве сопряжено со многими трудностями, одна из которых – распространение почвенной эрозии почти на всей территории края.</p>
+                        <p>В пределах городской территории отмечаются нарушение строения почвенного профиля и изменение основных свойства почв, поэтому современные почвы Барнаула классифицируются как техногенно-трансформированные. Более всего подвергнуты изменениям черноземы, в меньшей степени – дерново-подзолистые (под лесом) и аллювиальные почвы.</p>
+                    </div>
+                </div>
+                
+
+                <div class="nature-subsection hydrology-subsection">
+                    <h3>Гидрография Барнаула</h3>
+                    <div class="nature-text">
+                        <p>По территории города протекают реки:</p>
+                        <p>Обь – протяженность участка реки в пределах городской черты составляет 47 км. В городах находятся промышленные и коммунальные предприятия с водозаборами из реки Обь и со сбросами сточных вод в реку. Сброс сточных вод производят 43 предприятия. Количество водозаборных сооружений на реке Обь – 6 единиц;</p>
+                        <p>Барнаулка, левый приток Оби;</p>
+                        <p>Ляпиха – малая река, впадающая в Обь слева, у села Гоньба;</p>
+                        <p>Землянуха – малая река, впадающая в Обь слева у поселка Казенная Заимка;</p>
+                        <p>Власиха – малая река, левый приток Барнаулки;</p>
+                        <p>Пивоварка – малая река, левый приток Барнаулки.</p>
+                        <p>Также на территории Барнаула расположены озеро Лебежье в Центральном районе, озеро Пионерское в поселке Казенная Заимка и озеро Ляпиха в Ленинском районе.</p>
+                    </div>
+                    
+
+                    <div class="diagram-title">Средние концентрации в долях ПДК</div>
+                    
+
+                    <div class="pie-charts-container" id="pieChartsContainer">
+
+                    </div>
+                    
+
+                    <div class="pie-legend">
+                        <div class="pie-legend-item">
+                            <div class="pie-color" style="background-color: #4a767c;"></div>
+                            <span>Нефтепродукты</span>
+                        </div>
+                        <div class="pie-legend-item">
+                            <div class="pie-color" style="background-color: #576489;"></div>
+                            <span>Железо общее</span>
+                        </div>
+                        <div class="pie-legend-item">
+                            <div class="pie-color" style="background-color: #a0ebe0;"></div>
+                            <span>Фенолы</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div style="margin-top: 40px; text-align: center; width: 100%;">
+                    <div class="integral-map-container" style="max-width: 1000px; margin: 0 auto;">
+                        <a href="landuse/index.html" class="integral-map-link">
+                            <img src="landuse.svg" alt="Карта природного каркаса города Барнаула" class="integral-map-image">
+                            <div class="integral-map-overlay">
+                                <div class="overlay-text">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span>Открыть карту природного каркаса города Барнаула</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="integral-map-section">
+            <h2 class="section-title integral-title">Интегральная экологическая карта города Барнаула на 2023 год</h2>
+            
+            <div class="integral-map-container">
+                <a href="integral/index.html" class="integral-map-link">
+                    <img src="integral.svg" alt="Интегральная экологическая карта города Барнаула" class="integral-map-image">
+                    <div class="integral-map-overlay">
+                        <div class="overlay-text">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>Открыть интерактивную карту</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function scrollToContent() {
+            const mainContent = document.querySelector('.main-content');
+            mainContent.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+
+        const pollutionData = [
+            { district: "Октябрьский район", values: [29.3, 23.4, 37.5, 4.7] },
+            { district: "Железнодорожный район", values: [24.0, 29.7, 37.5, 6.2] },
+            { district: "Центральный район", values: [20.0, 29.7, 40.6, 9.4] },
+            { district: "Индустриальный район", values: [14.7, 15.6, 21.9, 4.7] },
+            { district: "Ленинский район", values: [0, 21.9, 20.3, 3.1] }
+        ];
+
+
+        const waterData = [
+            { river: "Обь (выше г. Барнаула)", values: [1.0, 2.1, 2.1], percentages: [19.2, 40.4, 40.4] },
+            { river: "Обь (ниже г. Барнаула)", values: [0.8, 2.0, 2.1], percentages: [16.3, 40.8, 42.9] },
+            { river: "Барнаулка", values: [3.7, 4.7, 3.8], percentages: [30.3, 38.5, 31.2] }
+        ];
+
+
+        
+  
+        const windDataJanuary = {
+            directions: ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'],
+            speeds1_2: [0.3, 1.1, 2.8, 1.9, 2.3, 2.0, 3.4, 6.1, 8.7, 4.6, 2.9, 2.1, 3.6, 2.0, 1.7, 1.0],
+            speeds3_4: [0, 0, 0.1, 0, 0, 0.1, 0.4, 1.2, 3.4, 5.1, 3.2, 1.6, 0.9, 0.2, 0, 0],
+            speeds5_6: [0, 0, 0, 0, 0, 0, 0, 0, 0.7, 2.6, 1.7, 0.9, 0.1, 0, 0, 0],
+            speeds7_8: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.6, 0.7, 0.3, 0, 0, 0, 0],
+            calm: 29.0
+        };
+
+
+        const windDataJuly = {
+            directions: ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'],
+            speeds1_2: [5.1, 5.1, 4.6, 3.8, 3.2, 3.0, 3.7, 3.4, 5.6, 4.7, 3.4, 2.4, 6.3, 4.8, 4.8, 4.0],
+            speeds3_4: [0.5, 0.3, 1.0, 0.4, 0.2, 0.5, 0.7, 0.5, 0.4, 2.1, 1.9, 1.3, 1.5, 0.7, 0.3, 0.2],
+            speeds5_6: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.5, 0.3, 0.1, 0, 0, 0],
+            speeds7_8: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0, 0, 0, 0, 0],
+            calm: 18.0
+        };
+
+
+        const temperatureData = {
+            months: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+            max: [3, 5, 15, 29, 33, 34, 36, 37, 32, 26, 16, 6],
+            day: [-14, -11, 0, 11, 17, 24, 25, 23, 16, 8, -3, -10],
+            average: [-18, -16, -5, 6, 12, 19, 20, 17, 11, 4, -6, -14],
+            night: [-23, -21, -10, 0, 6, 13, 14, 11, 5, -1, -9, -18],
+            min: [-42, -41, -32, -15, -5, 0, 5, 1, -5, -14, -35, -43]
+        };
+
+
+        const precipitationData = {
+            months: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+            daysWith: [14, 11, 11, 8, 12, 10, 15, 11, 11, 13, 17, 17],
+            daysWithout: [17, 17, 20, 22, 19, 20, 16, 20, 19, 18, 13, 14],
+            total: [20, 15, 24, 25, 45, 41, 86, 41, 31, 46, 50, 26],
+            daily: [0.7, 0.5, 0.8, 0.8, 1.5, 1.4, 2.8, 1.3, 1.0, 1.5, 1.7, 0.8],
+            intensity: [1.4, 1.3, 2.1, 3.0, 3.6, 4.1, 5.9, 3.5, 2.9, 3.4, 3.1, 1.5]
+        };
+
+
+        function createDiagram() {
+            const diagram = document.getElementById('pollutionDiagram');
+            diagram.innerHTML = '';
+            
+            pollutionData.forEach((data, columnIndex) => {
+                const column = document.createElement('div');
+                column.className = 'diagram-column';
+                
+
+                const districtName = document.createElement('div');
+                districtName.className = 'district-name';
+                districtName.innerHTML = data.district;
+                column.appendChild(districtName);
+                
+
+                const barsContainer = document.createElement('div');
+                barsContainer.className = 'bars-container';
+                
+
+                data.values.forEach((value, barIndex) => {
+                    const bar = document.createElement('div');
+                    bar.className = `bar bar-${['dust', 'no2', 'co', 'carbon'][barIndex]}`;
+                    
+
+                    const barValue = document.createElement('div');
+                    barValue.className = 'bar-value';
+                    barValue.innerHTML = value > 0 ? `${value}%` : '—';
+                    bar.appendChild(barValue);
+                    
+                    barsContainer.appendChild(bar);
+                    
+
+                    setTimeout(() => {
+                        bar.style.height = `${value * 1.5}px`;
+                    }, columnIndex * 80);
+                });
+                
+                column.appendChild(barsContainer);
+                diagram.appendChild(column);
+            });
+        }
+
+
+        function createPieCharts() {
+            const container = document.getElementById('pieChartsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            waterData.forEach((data, chartIndex) => {
+                const pieItem = document.createElement('div');
+                pieItem.className = 'pie-chart-item';
+                
+
+                const title = document.createElement('div');
+                title.className = 'pie-title';
+                title.textContent = data.river;
+                pieItem.appendChild(title);
+                
+
+                const pieWrapper = document.createElement('div');
+                pieWrapper.className = 'pie-chart-wrapper';
+                
+
+                const pieChart = document.createElement('div');
+                pieChart.className = 'pie-chart-simple';
+                
+                const conicGradient = `conic-gradient(
+                    #4a767c 0% ${data.percentages[0]}%,
+                    #576489 ${data.percentages[0]}% ${data.percentages[0] + data.percentages[1]}%,
+                    #a0ebe0 ${data.percentages[0] + data.percentages[1]}% 100%
+                )`;
+                
+                pieChart.style.background = conicGradient;
+                
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'pie-tooltip';
+                tooltip.innerHTML = `
+                    <strong>${data.river}</strong><br>
+                    Нефтепродукты: ${data.values[0]}<br>
+                    Железо общее: ${data.values[1]}<br>
+                    Фенолы: ${data.values[2]}
+                `;
+                pieWrapper.appendChild(tooltip);
+                
+
+                pieChart.addEventListener('mouseenter', function(e) {
+                    tooltip.classList.add('show');
+                    this.style.transform = 'scale(1.1)';
+                    this.style.boxShadow = '0 0 25px rgba(0,0,0,0.2)';
+                    this.style.filter = 'brightness(1.05)';
+                });
+                
+                pieChart.addEventListener('mouseleave', function() {
+                    tooltip.classList.remove('show');
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                    this.style.filter = 'brightness(1)';
+                });
+                
+                pieWrapper.appendChild(pieChart);
+                pieItem.appendChild(pieWrapper);
+                container.appendChild(pieItem);
+            });
+        }
+
+
+        function createWindRose(containerId, windData, title) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const size = Math.min(container.offsetWidth, container.offsetHeight) - 40;
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size * 0.35;
+            const numDirections = windData.directions.length;
+            
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", "100%");
+            svg.setAttribute("height", "100%");
+            svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+            svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+            
+
+            const colorPalette = {
+                speeds1_2: "#1a5276",    
+                speeds3_4: "#629cc3",    
+                speeds5_6: "#5dcae2",    
+                speeds7_8: "#85e9cd"     
+            };
+            
+
+            for (let i = 1; i <= 4; i++) {
+                const circle = document.createElementNS(svgNS, "circle");
+                circle.setAttribute("cx", centerX);
+                circle.setAttribute("cy", centerY);
+                circle.setAttribute("r", radius * i / 4);
+                circle.setAttribute("fill", "none");
+                circle.setAttribute("stroke", "#e0e0e0");
+                circle.setAttribute("stroke-width", "0.5");
+                svg.appendChild(circle);
+            }
+            
+
+            for (let i = 0; i < numDirections; i++) {
+                const angle = (i * 360 / numDirections) * Math.PI / 180;
+                const x = centerX + radius * 1.2 * Math.sin(angle);
+                const y = centerY - radius * 1.2 * Math.cos(angle);
+                
+                const line = document.createElementNS(svgNS, "line");
+                line.setAttribute("x1", centerX);
+                line.setAttribute("y1", centerY);
+                line.setAttribute("x2", x);
+                line.setAttribute("y2", y);
+                line.setAttribute("stroke", "#e0e0e0");
+                line.setAttribute("stroke-width", "0.5");
+                svg.appendChild(line);
+                
+
+                const text = document.createElementNS(svgNS, "text");
+                text.setAttribute("x", centerX + radius * 1.3 * Math.sin(angle));
+                text.setAttribute("y", centerY - radius * 1.3 * Math.cos(angle));
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("dominant-baseline", "middle");
+                text.setAttribute("font-size", "10");
+                text.setAttribute("fill", "#666");
+                text.textContent = windData.directions[i];
+                svg.appendChild(text);
+            }
+            
+
+            for (let i = 0; i < numDirections; i++) {
+                const angle = (i * 360 / numDirections) * Math.PI / 180;
+                const nextAngle = ((i + 1) * 360 / numDirections) * Math.PI / 180;
+                
+
+                
+
+                if (windData.speeds1_2[i] > 0) {
+                    const r1 = radius * windData.speeds1_2[i] / 15;
+                    const path = createWindSegment(centerX, centerY, r1, angle, nextAngle);
+                    path.setAttribute("fill", colorPalette.speeds1_2);
+                    path.setAttribute("opacity", "0.9");
+                    svg.appendChild(path);
+                }
+                
+
+                if (windData.speeds3_4[i] > 0) {
+                    const baseRadius = windData.speeds1_2[i];
+                    const r2 = radius * (windData.speeds3_4[i] + baseRadius) / 15;
+                    const path = createWindSegment(centerX, centerY, r2, angle, nextAngle);
+                    path.setAttribute("fill", colorPalette.speeds3_4);
+                    path.setAttribute("opacity", "0.9");
+                    svg.appendChild(path);
+                }
+                
+
+                if (windData.speeds5_6[i] > 0) {
+                    const baseRadius = windData.speeds1_2[i] + windData.speeds3_4[i];
+                    const r3 = radius * (windData.speeds5_6[i] + baseRadius) / 15;
+                    const path = createWindSegment(centerX, centerY, r3, angle, nextAngle);
+                    path.setAttribute("fill", colorPalette.speeds5_6);
+                    path.setAttribute("opacity", "0.9");
+                    svg.appendChild(path);
+                }
+                
+
+                if (windData.speeds7_8 && windData.speeds7_8[i] > 0) {
+                    const baseRadius = windData.speeds1_2[i] + windData.speeds3_4[i] + windData.speeds5_6[i];
+                    const r4 = radius * (windData.speeds7_8[i] + baseRadius) / 15;
+                    const path = createWindSegment(centerX, centerY, r4, angle, nextAngle);
+                    path.setAttribute("fill", colorPalette.speeds7_8);
+                    path.setAttribute("opacity", "0.9");
+                    svg.appendChild(path);
+                }
+            }
+            
+
+            
+            container.innerHTML = '';
+            container.appendChild(svg);
+        }
+        
+        function createWindSegment(cx, cy, radius, startAngle, endAngle) {
+            const svgNS = "http://www.w3.org/2000/svg";
+            const path = document.createElementNS(svgNS, "path");
+            
+            const x1 = cx + radius * Math.sin(startAngle);
+            const y1 = cy - radius * Math.cos(startAngle);
+            const x2 = cx + radius * Math.sin(endAngle);
+            const y2 = cy - radius * Math.cos(endAngle);
+            
+            const largeArcFlag = (endAngle - startAngle) > Math.PI ? 1 : 0;
+            
+            const d = [
+                "M", cx, cy,
+                "L", x1, y1,
+                "A", radius, radius, 0, largeArcFlag, 1, x2, y2,
+                "Z"
+            ].join(" ");
+            
+            path.setAttribute("d", d);
+            return path;
+        }
+
+
+        function createTemperatureChart() {
+            const container = document.getElementById('temperatureChart');
+            if (!container) return;
+            
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            const margin = { top: 25, right: 40, bottom: 40, left: 55 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", "100%");
+            svg.setAttribute("height", "100%");
+            svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+            
+
+            const xScale = chartWidth / (temperatureData.months.length - 1);
+            const maxTemp = Math.max(...temperatureData.max);
+            const minTemp = Math.min(...temperatureData.min);
+            const yScale = chartHeight / (maxTemp - minTemp);
+            
+            // Создаем ось Y с улучшенным расположением значений
+            const yTicks = [-40, -30, -20, -10, 0, 10, 20, 30, 40];
+            yTicks.forEach(temp => {
+                const y = margin.top + chartHeight - (temp - minTemp) * yScale;
+                
+
+                if (y < margin.top || y > margin.top + chartHeight) return;
+                
+
+                const line = document.createElementNS(svgNS, "line");
+                line.setAttribute("x1", margin.left);
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", width - margin.right);
+                line.setAttribute("y2", y);
+                line.setAttribute("stroke", temp === 0 ? "#333" : "#e0e0e0");
+                line.setAttribute("stroke-width", temp === 0 ? "1.2" : "0.7");
+                line.setAttribute("stroke-dasharray", temp === 0 ? "none" : "2,2");
+                svg.appendChild(line);
+                
+
+                if (temp % 20 === 0 || temp === 0) {
+                    const text = document.createElementNS(svgNS, "text");
+                    text.setAttribute("x", margin.left - 12);
+                    text.setAttribute("y", y);
+                    text.setAttribute("text-anchor", "end");
+                    text.setAttribute("dominant-baseline", "middle");
+                    text.setAttribute("font-size", "11");
+                    text.setAttribute("fill", "#666");
+                    text.setAttribute("font-weight", temp === 0 ? "600" : "400");
+                    text.textContent = `${temp}°C`;
+                    svg.appendChild(text);
+                }
+            });
+            
+
+            const lineColors = {
+                max: '#e74c3c',
+                day: '#3498db',
+                average: '#2c5530',
+                night: '#9b59b6',
+                min: '#34495e'
+            };
+            
+
+            const lineTypes = ['max', 'day', 'average', 'night', 'min'];
+            
+            lineTypes.forEach(lineType => {
+                const path = document.createElementNS(svgNS, "path");
+                let d = '';
+                
+                temperatureData.months.forEach((month, i) => {
+                    const x = margin.left + i * xScale;
+                    const y = margin.top + chartHeight - (temperatureData[lineType][i] - minTemp) * yScale;
+                    
+                    if (i === 0) {
+                        d = `M ${x} ${y}`;
+                    } else {
+                        d += ` L ${x} ${y}`;
+                    }
+                });
+                
+                path.setAttribute("d", d);
+                path.setAttribute("fill", "none");
+                path.setAttribute("stroke", lineColors[lineType]);
+                path.setAttribute("stroke-width", lineType === 'max' || lineType === 'min' ? "1.5" : "2");
+                
+
+                if (lineType === 'max' || lineType === 'min') {
+                    path.setAttribute("stroke-dasharray", "5,3");
+                }
+                
+                path.setAttribute("stroke-linecap", "round");
+                path.setAttribute("stroke-linejoin", "round");
+                svg.appendChild(path);
+            });
+            
+
+            ['day', 'night'].forEach(lineType => {
+                temperatureData.months.forEach((month, i) => {
+                    const x = margin.left + i * xScale;
+                    const y = margin.top + chartHeight - (temperatureData[lineType][i] - minTemp) * yScale;
+                    
+                    const circle = document.createElementNS(svgNS, "circle");
+                    circle.setAttribute("cx", x);
+                    circle.setAttribute("cy", y);
+                    circle.setAttribute("r", "3.5");
+                    circle.setAttribute("fill", lineColors[lineType]);
+                    circle.setAttribute("stroke", "white");
+                    circle.setAttribute("stroke-width", "1.5");
+                    svg.appendChild(circle);
+                    
+
+                    if (i === 0 || i === 6) {
+                        const text = document.createElementNS(svgNS, "text");
+                        text.setAttribute("x", x);
+
+                        const textY = y - (i === 0 ? 12 : 15);
+                        text.setAttribute("y", textY);
+                        text.setAttribute("text-anchor", "middle");
+                        text.setAttribute("font-size", "10");
+                        text.setAttribute("fill", lineColors[lineType]);
+                        text.setAttribute("font-weight", "600");
+                        text.textContent = `${temperatureData[lineType][i]}°`;
+                        svg.appendChild(text);
+                    }
+                });
+            });
+            
+
+            temperatureData.months.forEach((month, i) => {
+                const x = margin.left + i * xScale;
+                
+
+                if (i % 2 === 0) { 
+                    const line = document.createElementNS(svgNS, "line");
+                    line.setAttribute("x1", x);
+                    line.setAttribute("y1", margin.top);
+                    line.setAttribute("x2", x);
+                    line.setAttribute("y2", height - margin.bottom);
+                    line.setAttribute("stroke", "#e0e0e0");
+                    line.setAttribute("stroke-width", "0.5");
+                    line.setAttribute("stroke-dasharray", "2,2");
+                    svg.appendChild(line);
+                }
+                
+
+                const text = document.createElementNS(svgNS, "text");
+                text.setAttribute("x", x);
+                text.setAttribute("y", height - margin.bottom + 15);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("font-size", "11");
+                text.setAttribute("fill", "#666");
+                text.textContent = month;
+                svg.appendChild(text);
+            });
+            
+
+            const zeroY = margin.top + chartHeight - (0 - minTemp) * yScale;
+            if (zeroY > margin.top && zeroY < height - margin.bottom) {
+                const zeroText = document.createElementNS(svgNS, "text");
+                zeroText.setAttribute("x", margin.left - 25);
+                zeroText.setAttribute("y", zeroY);
+                zeroText.setAttribute("text-anchor", "end");
+                zeroText.setAttribute("dominant-baseline", "middle");
+                zeroText.setAttribute("font-size", "11");
+                zeroText.setAttribute("fill", "#e74c3c");
+                zeroText.setAttribute("font-weight", "bold");
+                zeroText.textContent = "0°C";
+                svg.appendChild(zeroText);
+            }
+            
+            container.innerHTML = '';
+            container.appendChild(svg);
+        }
+
+
+        function createPrecipitationChart() {
+            const container = document.getElementById('precipitationChart');
+            if (!container) return;
+            
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            const margin = { top: 25, right: 60, bottom: 40, left: 60 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", "100%");
+            svg.setAttribute("height", "100%");
+            svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+            
+
+            const xScale = chartWidth / (precipitationData.months.length - 1);
+            const maxPrecipitation = Math.max(...precipitationData.total);
+            const maxDays = Math.max(...precipitationData.daysWith, ...precipitationData.daysWithout);
+            const yScalePrecip = chartHeight * 0.5 / maxPrecipitation;
+            const yScaleDays = chartHeight * 0.4 / maxDays;
+            
+
+            for (let i = 0; i <= maxPrecipitation; i += 20) {
+                const y = margin.top + chartHeight * 0.5 - i * yScalePrecip;
+                
+                if (i % 40 === 0 && i > 0) {
+                    const line = document.createElementNS(svgNS, "line");
+                    line.setAttribute("x1", margin.left);
+                    line.setAttribute("y1", y);
+                    line.setAttribute("x2", width - margin.right);
+                    line.setAttribute("y2", y);
+                    line.setAttribute("stroke", "#e0e0e0");
+                    line.setAttribute("stroke-width", "0.5");
+                    line.setAttribute("stroke-dasharray", "2,2");
+                    svg.appendChild(line);
+                    
+                    const text = document.createElementNS(svgNS, "text");
+                    text.setAttribute("x", margin.left - 10);
+                    text.setAttribute("y", y);
+                    text.setAttribute("text-anchor", "end");
+                    text.setAttribute("dominant-baseline", "middle");
+                    text.setAttribute("font-size", "10");
+                    text.setAttribute("fill", "#3498db");
+                    text.textContent = `${i} мм`;
+                    svg.appendChild(text);
+                }
+            }
+            
+
+            const rightAxisX = width - margin.right + 15;
+            for (let i = 0; i <= maxDays; i += 5) {
+                const y = margin.top + chartHeight * 0.4 - i * yScaleDays;
+                
+                if (i % 10 === 0 && i > 0) {
+                    const line = document.createElementNS(svgNS, "line");
+                    line.setAttribute("x1", margin.left);
+                    line.setAttribute("y1", y);
+                    line.setAttribute("x2", width - margin.right);
+                    line.setAttribute("y2", y);
+                    line.setAttribute("stroke", "#e0e0e0");
+                    line.setAttribute("stroke-width", "0.5");
+                    line.setAttribute("stroke-dasharray", "3,3");
+                    svg.appendChild(line);
+                    
+                    const text = document.createElementNS(svgNS, "text");
+                    text.setAttribute("x", rightAxisX);
+                    text.setAttribute("y", y);
+                    text.setAttribute("text-anchor", "start");
+                    text.setAttribute("dominant-baseline", "middle");
+                    text.setAttribute("font-size", "10");
+                    text.setAttribute("fill", "#666");
+                    text.textContent = `${i} дн`;
+                    svg.appendChild(text);
+                }
+            }
+            
+
+            precipitationData.months.forEach((month, i) => {
+                const x = margin.left + i * xScale;
+                const barWidth = xScale * 0.6;
+                const barHeight = precipitationData.total[i] * yScalePrecip;
+                const barY = margin.top + chartHeight * 0.5 - barHeight;
+                
+                const bar = document.createElementNS(svgNS, "rect");
+                bar.setAttribute("x", x - barWidth / 2);
+                bar.setAttribute("y", barY);
+                bar.setAttribute("width", barWidth);
+                bar.setAttribute("height", barHeight);
+                bar.setAttribute("fill", "#3498db");
+                bar.setAttribute("opacity", "0.7");
+                svg.appendChild(bar);
+                
+
+                if (precipitationData.total[i] > 30) {
+                    const text = document.createElementNS(svgNS, "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", barY - 7);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("font-size", "9");
+                    text.setAttribute("fill", "#3498db");
+                    text.setAttribute("font-weight", "bold");
+                    text.textContent = `${precipitationData.total[i]}`;
+                    svg.appendChild(text);
+                }
+            });
+            
+
+            const lineColors = {
+                daysWith: '#2ecc71',
+                daysWithout: '#f1c40f'
+            };
+            
+
+            const lineWith = document.createElementNS(svgNS, "path");
+            let dWith = '';
+            
+
+            const lineWithout = document.createElementNS(svgNS, "path");
+            let dWithout = '';
+            
+            precipitationData.months.forEach((month, i) => {
+                const x = margin.left + i * xScale;
+                const yWith = margin.top + chartHeight * 0.4 - precipitationData.daysWith[i] * yScaleDays;
+                const yWithout = margin.top + chartHeight * 0.4 - precipitationData.daysWithout[i] * yScaleDays;
+                
+                if (i === 0) {
+                    dWith = `M ${x} ${yWith}`;
+                    dWithout = `M ${x} ${yWithout}`;
+                } else {
+                    dWith += ` L ${x} ${yWith}`;
+                    dWithout += ` L ${x} ${yWithout}`;
+                }
+            });
+            
+            lineWith.setAttribute("d", dWith);
+            lineWith.setAttribute("fill", "none");
+            lineWith.setAttribute("stroke", lineColors.daysWith);
+            lineWith.setAttribute("stroke-width", "2");
+            lineWith.setAttribute("stroke-linecap", "round");
+            lineWith.setAttribute("stroke-linejoin", "round");
+            svg.appendChild(lineWith);
+            
+            lineWithout.setAttribute("d", dWithout);
+            lineWithout.setAttribute("fill", "none");
+            lineWithout.setAttribute("stroke", lineColors.daysWithout);
+            lineWithout.setAttribute("stroke-width", "2");
+            lineWithout.setAttribute("stroke-linecap", "round");
+            lineWithout.setAttribute("stroke-linejoin", "round");
+            svg.appendChild(lineWithout);
+            
+
+            const keyMonths = [0, 3, 6, 9]; 
+            
+            keyMonths.forEach(i => {
+                const x = margin.left + i * xScale;
+                const yWith = margin.top + chartHeight * 0.4 - precipitationData.daysWith[i] * yScaleDays;
+                const yWithout = margin.top + chartHeight * 0.4 - precipitationData.daysWithout[i] * yScaleDays;
+                
+
+                const circleWith = document.createElementNS(svgNS, "circle");
+                circleWith.setAttribute("cx", x);
+                circleWith.setAttribute("cy", yWith);
+                circleWith.setAttribute("r", "4");
+                circleWith.setAttribute("fill", lineColors.daysWith);
+                circleWith.setAttribute("stroke", "white");
+                circleWith.setAttribute("stroke-width", "1.5");
+                svg.appendChild(circleWith);
+                
+
+                const circleWithout = document.createElementNS(svgNS, "circle");
+                circleWithout.setAttribute("cx", x);
+                circleWithout.setAttribute("cy", yWithout);
+                circleWithout.setAttribute("r", "4");
+                circleWithout.setAttribute("fill", lineColors.daysWithout);
+                circleWithout.setAttribute("stroke", "white");
+                circleWithout.setAttribute("stroke-width", "1.5");
+                svg.appendChild(circleWithout);
+                
+
+                const textWith = document.createElementNS(svgNS, "text");
+                textWith.setAttribute("x", x);
+                textWith.setAttribute("y", yWith - 10);
+                textWith.setAttribute("text-anchor", "middle");
+                textWith.setAttribute("font-size", "9");
+                textWith.setAttribute("fill", lineColors.daysWith);
+                textWith.setAttribute("font-weight", "bold");
+                textWith.textContent = `${precipitationData.daysWith[i]}`;
+                svg.appendChild(textWith);
+                
+                // Подписи для дней без осадков
+                const textWithout = document.createElementNS(svgNS, "text");
+                textWithout.setAttribute("x", x);
+                textWithout.setAttribute("y", yWithout + 12);
+                textWithout.setAttribute("text-anchor", "middle");
+                textWithout.setAttribute("font-size", "9");
+                textWithout.setAttribute("fill", lineColors.daysWithout);
+                textWithout.setAttribute("font-weight", "bold");
+                textWithout.textContent = `${precipitationData.daysWithout[i]}`;
+                svg.appendChild(textWithout);
+            });
+            
+
+            precipitationData.months.forEach((month, i) => {
+                const x = margin.left + i * xScale;
+                
+
+                if (keyMonths.includes(i)) {
+                    const line = document.createElementNS(svgNS, "line");
+                    line.setAttribute("x1", x);
+                    line.setAttribute("y1", margin.top);
+                    line.setAttribute("x2", x);
+                    line.setAttribute("y2", height - margin.bottom);
+                    line.setAttribute("stroke", "#e0e0e0");
+                    line.setAttribute("stroke-width", "0.5");
+                    line.setAttribute("stroke-dasharray", "3,3");
+                    svg.appendChild(line);
+                }
+                
+
+                const text = document.createElementNS(svgNS, "text");
+                text.setAttribute("x", x);
+                text.setAttribute("y", height - margin.bottom + 15);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("font-size", "11");
+                text.setAttribute("fill", "#666");
+                text.textContent = month;
+                svg.appendChild(text);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(svg);
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            createDiagram();
+            
+
+            createPieCharts();
+            
+
+            createWindRose('windRoseJanuary', windDataJanuary, 'Январь');
+            createWindRose('windRoseJuly', windDataJuly, 'Июль');
+            
+
+            createTemperatureChart();
+            
+
+            createPrecipitationChart();
+            
+
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const heroImage = document.querySelector('.hero-image img');
+                if (heroImage) {
+                    heroImage.style.transform = `translateY(${scrolled * 0.3}px)`;
+                }
+            });
+            
+
+            const svgObject = document.querySelector('.svg-map');
+            if (svgObject) {
+                svgObject.addEventListener('mouseenter', function() {
+                    this.style.filter = 'brightness(1.05) contrast(1.1)';
+                });
+                
+                svgObject.addEventListener('mouseleave', function() {
+                    this.style.filter = 'brightness(1) contrast(1)';
+                });
+            }
+            
+
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    createWindRose('windRoseJanuary', windDataJanuary, 'Январь');
+                    createWindRose('windRoseJuly', windDataJuly, 'Июль');
+                    createTemperatureChart();
+                    createPrecipitationChart();
+                }, 250);
+            });
+        });
+    </script>
+</body>
+</html>

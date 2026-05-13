@@ -1,0 +1,1 @@
+var json__23 = {"type":"FeatureCollection","name":"_23","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"ЮЖНЫЙ","population":"18098","type":"поселок городского типа"},"geometry":{"type":"Point","coordinates":[83.698184615622438,53.25534453910582]}}]}

@@ -1,0 +1,1 @@
+var json__31 = {"type":"FeatureCollection","name":"_31","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"Завод Алтайлесмаш","type":"Производство древесины"},"geometry":{"type":"Point","coordinates":[83.667285156411836,53.392449492268511]}}]}

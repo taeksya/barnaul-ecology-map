@@ -1,0 +1,1 @@
+var json__25 = {"type":"FeatureCollection","name":"_25","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"Международный аэропорт им.  Г.С. Титова"},"geometry":{"type":"Point","coordinates":[83.545270979582128,53.363538611068115]}}]}

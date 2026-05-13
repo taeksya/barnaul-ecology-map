@@ -1,0 +1,1 @@
+var json__37 = {"type":"FeatureCollection","name":"_37","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"Барнаульский водоканал","type":"Водоснабжение"},"geometry":{"type":"Point","coordinates":[83.798529086184573,53.37560751163592]}}]}
