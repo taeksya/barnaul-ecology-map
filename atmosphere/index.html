@@ -473,8 +473,6 @@
             else if (layerName.includes('layer__39')) popupTitle = 'Граница городского округа';
             else if (layerName.includes('layer__12')) popupTitle = 'Земли населенных пунктов';
             else if (layerName.includes('layer__11')) popupTitle = 'Парки,скверы';
-
-
             else if (layerName.includes('layer__0')) popupTitle = 'Земли лесного фонда';
             else if (layerName.includes('layer__2') || layerName.includes('layer__3') || layerName.includes('layer__4')) popupTitle = 'Рельеф';
             else if (layerName.includes('layer__5')) popupTitle = 'Особо охраняемые природные территории';
@@ -678,7 +676,41 @@
         var layer_1000_21 = new L.geoJson(json_1000_21, { interactive: true, dataVar: 'json_1000_21', layerName: 'layer_1000_21', pane: 'pane_1000_21', onEachFeature: pop_1000_21, pointToLayer: function(f, ll) { return L.circleMarker(ll, style_1000_21_0()); } });
         var layer__22 = new L.geoJson(json__22, { interactive: true, dataVar: 'json__22', layerName: 'layer__22', pane: 'pane__22', onEachFeature: pop__22, pointToLayer: function(f, ll) { return L.circleMarker(ll, style__22_0()); } });
         var layer__23 = new L.geoJson(json__23, { interactive: true, dataVar: 'json__23', layerName: 'layer__23', pane: 'pane__23', onEachFeature: pop__23, pointToLayer: function(f, ll) { return L.circleMarker(ll, style__23_0()); } });
-        var layer__24 = new L.geoJson(json__24, { interactive: true, dataVar: 'json__24', layerName: 'layer__24', pane: 'pane__24', onEachFeature: pop__24, style: style__24_0 });
+        
+        // РАЗДЕЛЁННЫЕ СЛОИ ДЛЯ ПРОМЫШЛЕННЫХ ОБЪЕКТОВ (вместо одного layer__24)
+        var layer__24_industrial = L.geoJson(json__24, {
+            interactive: true,
+            layerName: 'layer__24_industrial',
+            pane: 'pane__24',
+            onEachFeature: pop__24,
+            filter: function(feature) {
+                return feature.properties.landuse === 'industrial';
+            },
+            style: style__24_0
+        });
+        
+        var layer__24_quarry = L.geoJson(json__24, {
+            interactive: true,
+            layerName: 'layer__24_quarry',
+            pane: 'pane__24',
+            onEachFeature: pop__24,
+            filter: function(feature) {
+                return feature.properties.landuse === 'quarry';
+            },
+            style: style__24_0
+        });
+        
+        var layer__24_landfill = L.geoJson(json__24, {
+            interactive: true,
+            layerName: 'layer__24_landfill',
+            pane: 'pane__24',
+            onEachFeature: pop__24,
+            filter: function(feature) {
+                return feature.properties.landuse === 'landfill';
+            },
+            style: style__24_0
+        });
+        
         var layer__25 = new L.geoJson(json__25, { interactive: true, dataVar: 'json__25', layerName: 'layer__25', pane: 'pane__25', onEachFeature: pop__25, pointToLayer: function(f, ll) { return L.marker(ll, style__25_0()); } });
         var layer__26 = new L.geoJson(json__26, { interactive: true, dataVar: 'json__26', layerName: 'layer__26', pane: 'pane__26', onEachFeature: pop__26, pointToLayer: function(f, ll) { return L.marker(ll, style__26_0()); } });
         var layer__27 = new L.geoJson(json__27, { interactive: true, dataVar: 'json__27', layerName: 'layer__27', pane: 'pane__27', onEachFeature: pop__27, pointToLayer: function(f, ll) { return L.marker(ll, style__27_0()); } });
@@ -696,66 +728,66 @@
         var layer__39 = new L.geoJson(json__39, { interactive: true, dataVar: 'json__39', layerName: 'layer__39', pane: 'pane__39', onEachFeature: pop__39, style: style__39_0 });
         
         // Отдельные слои для каждого типа населённых пунктов (фильтруем по landuse)
-var layer__12_residential = L.geoJson(json__12, {
-    interactive: true,
-    layerName: 'layer__12_residential',
-    pane: 'pane__12',
-    onEachFeature: pop__12,
-    filter: function(feature) {
-        return feature.properties.landuse === 'residential';
-    },
-    style: style__12_0
-});
+        var layer__12_residential = L.geoJson(json__12, {
+            interactive: true,
+            layerName: 'layer__12_residential',
+            pane: 'pane__12',
+            onEachFeature: pop__12,
+            filter: function(feature) {
+                return feature.properties.landuse === 'residential';
+            },
+            style: style__12_0
+        });
 
-var layer__12_commercial = L.geoJson(json__12, {
-    interactive: true,
-    layerName: 'layer__12_commercial',
-    pane: 'pane__12',
-    onEachFeature: pop__12,
-    filter: function(feature) {
-        return feature.properties.landuse === 'commercial' || feature.properties.landuse === 'retail';
-    },
-    style: style__12_0
-});
+        var layer__12_commercial = L.geoJson(json__12, {
+            interactive: true,
+            layerName: 'layer__12_commercial',
+            pane: 'pane__12',
+            onEachFeature: pop__12,
+            filter: function(feature) {
+                return feature.properties.landuse === 'commercial' || feature.properties.landuse === 'retail';
+            },
+            style: style__12_0
+        });
 
-var layer__12_industrial = L.geoJson(json__12, {
-    interactive: true,
-    layerName: 'layer__12_industrial',
-    pane: 'pane__12',
-    onEachFeature: pop__12,
-    filter: function(feature) {
-        return feature.properties.landuse === 'industrial';
-    },
-    style: style__12_0
-});
+        var layer__12_industrial = L.geoJson(json__12, {
+            interactive: true,
+            layerName: 'layer__12_industrial',
+            pane: 'pane__12',
+            onEachFeature: pop__12,
+            filter: function(feature) {
+                return feature.properties.landuse === 'industrial';
+            },
+            style: style__12_0
+        });
 
-var layer__12_cemetery = L.geoJson(json__12, {
-    interactive: true,
-    layerName: 'layer__12_cemetery',
-    pane: 'pane__12',
-    onEachFeature: pop__12,
-    filter: function(feature) {
-        return feature.properties.landuse === 'cemetery';
-    },
-    style: style__12_0
-});
+        var layer__12_cemetery = L.geoJson(json__12, {
+            interactive: true,
+            layerName: 'layer__12_cemetery',
+            pane: 'pane__12',
+            onEachFeature: pop__12,
+            filter: function(feature) {
+                return feature.properties.landuse === 'cemetery';
+            },
+            style: style__12_0
+        });
 
-var layer__12_airport = L.geoJson(json__12, {
-    interactive: true,
-    layerName: 'layer__12_airport',
-    pane: 'pane__12',
-    onEachFeature: pop__12,
-    filter: function(feature) {
-        return feature.properties.landuse === 'airport';
-    },
-    style: style__12_0
-});
+        var layer__12_airport = L.geoJson(json__12, {
+            interactive: true,
+            layerName: 'layer__12_airport',
+            pane: 'pane__12',
+            onEachFeature: pop__12,
+            filter: function(feature) {
+                return feature.properties.landuse === 'airport';
+            },
+            style: style__12_0
+        });
 
         // Кластеры
         var cluster__25 = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 2 });
         cluster__25.addLayer(layer__25);
         
-        // Сохраняем слои
+        // Сохраняем слои (включая разделённые промышленные)
         allLayers = {
             'layer__0': layer__0, 'layer__1': layer__1, 'layer__2': layer__2, 'layer__3': layer__3, 'layer__4': layer__4,
             'layer__5': layer__5, 'layer__6': layer__6, 'layer__7': layer__7, 'layer__8': layer__8, 'layer__9': layer__9,
@@ -764,7 +796,10 @@ var layer__12_airport = L.geoJson(json__12, {
             'layer__12_airport': layer__12_airport, 'layer__13': layer__13, 'layer__14': layer__14,
             'layer__15': layer__15, 'layer__16': layer__16, 'layer__17': layer__17, 'layer__18': layer__18, 'layer__19': layer__19,
             'layer_1000_20': layer_1000_20, 'layer_1000_21': layer_1000_21, 'layer__22': layer__22, 'layer__23': layer__23,
-            'layer__24': layer__24, 'layer__25': layer__25, 'layer__26': layer__26, 'layer__27': layer__27, 'layer__28': layer__28,
+            'layer__24_industrial': layer__24_industrial,
+            'layer__24_quarry': layer__24_quarry,
+            'layer__24_landfill': layer__24_landfill,
+            'layer__25': layer__25, 'layer__26': layer__26, 'layer__27': layer__27, 'layer__28': layer__28,
             'layer__29': layer__29, 'layer__30': layer__30, 'layer__31': layer__31, 'layer__32': layer__32, 'layer__33': layer__33,
             'layer__34': layer__34, 'layer__35': layer__35, 'layer__36': layer__36, 'layer__37': layer__37, 'layer__38': layer__38,
             'layer__39': layer__39, 'cluster__25': cluster__25
@@ -794,20 +829,20 @@ var layer__12_airport = L.geoJson(json__12, {
             }
         }
         
-        // ========== ЛЕГЕНДА ==========
+        // ========== ЛЕГЕНДА (обновлена для разделённых слоёв) ==========
         var legendHTML = `
             <div class="legend-title">Легенда карты</div>
             <div class="legend-section"><div class="legend-section-title">Земли промышленных объектов</div>
-                <div class="legend-item" data-layer="layer__24"><div class="legend-color" style="background-color: rgba(242,213,239,1.0);"></div><span class="legend-text">Промышленные кварталы</span></div>
-                <div class="legend-item" data-layer="layer__24"><div class="legend-color" style="background-color: rgba(147,95,84,1.0);"></div><span class="legend-text">Карьер</span></div>
-                <div class="legend-item" data-layer="layer__24"><div class="legend-color" style="background-color: rgba(182,195,240,1.0);"></div><span class="legend-text">Отходы</span></div>
+                <div class="legend-item" data-layer="layer__24_industrial"><div class="legend-color" style="background-color: rgba(242,213,239,1.0);"></div><span class="legend-text">Промышленные кварталы</span></div>
+                <div class="legend-item" data-layer="layer__24_quarry"><div class="legend-color" style="background-color: rgba(147,95,84,1.0);"></div><span class="legend-text">Карьер</span></div>
+                <div class="legend-item" data-layer="layer__24_landfill"><div class="legend-color" style="background-color: rgba(182,195,240,1.0);"></div><span class="legend-text">Отходы</span></div>
             </div>
             <div class="legend-section"><div class="legend-section-title">Санитарные зоны</div>
                 <div class="legend-item" data-layer="layer__14"><img src="legend/_14.png" class="legend-img" /><span class="legend-text">Санитарно-защитные зоны предприятий</span></div>
                 <div class="legend-item" data-layer="layer__13"><img src="legend/_13.png" class="legend-img" /><span class="legend-text">Санитарные разрывы автомобильных дорог</span></div>
             </div>
             <div class="legend-section"><div class="legend-section-title">Виды промышленности</div>
-                <table class="legend-table"><tr><td data-layer="layer__37"><img src="legend/_37.png" /></td><td data-layer="layer__37">Водоснабжение</tr><tr><td data-layer="layer__36"><img src="legend/_36.png" /></td><td data-layer="layer__36">Добывающая промышленность</tr><tr><td data-layer="layer__35"><img src="legend/_35.png" /></td><td data-layer="layer__35">Легкая промышленность</tr><tr><td data-layer="layer__34"><img src="legend/_34.png" /></td><td data-layer="layer__34">Машиностроение</tr><tr><td data-layer="layer__33"><img src="legend/_33.png" /></td><td data-layer="layer__33">Нефтехранилище</tr><tr><td data-layer="layer__32"><img src="legend/_32.png" /></td><td data-layer="layer__32">Пищевая промышленность</tr><tr><td data-layer="layer__31"><img src="legend/_31.png" /></td><td data-layer="layer__31">Производство древесины</tr><tr><td data-layer="layer__30"><img src="legend/_30.png" /></td><td data-layer="layer__30">Стройматериалы</tr><tr><td data-layer="layer__29"><img src="legend/_29.png" /></td><td data-layer="layer__29">Сбор отходов</tr><tr><td data-layer="layer__28"><img src="legend/_28.png" /></td><td data-layer="layer__28">Фармацевтика</tr><tr><td data-layer="layer__27"><img src="legend/_27.png" /></td><td data-layer="layer__27">Химическая промышленность</tr><tr><td data-layer="layer__26"><img src="legend/_26.png" /></td><td data-layer="layer__26">Энергетика</tr></table>
+                <table class="legend-table"><tr><td data-layer="layer__37"><img src="legend/_37.png" /></td><td data-layer="layer__37">Водоснабжение</td></tr><tr><td data-layer="layer__36"><img src="legend/_36.png" /></td><td data-layer="layer__36">Добывающая промышленность</td></tr><tr><td data-layer="layer__35"><img src="legend/_35.png" /></td><td data-layer="layer__35">Легкая промышленность</td></tr><tr><td data-layer="layer__34"><img src="legend/_34.png" /></td><td data-layer="layer__34">Машиностроение</td></tr><tr><td data-layer="layer__33"><img src="legend/_33.png" /></td><td data-layer="layer__33">Нефтехранилище</td></tr><tr><td data-layer="layer__32"><img src="legend/_32.png" /></td><td data-layer="layer__32">Пищевая промышленность</td></tr><tr><td data-layer="layer__31"><img src="legend/_31.png" /></td><td data-layer="layer__31">Производство древесины</td></tr><tr><td data-layer="layer__30"><img src="legend/_30.png" /></td><td data-layer="layer__30">Стройматериалы</td></tr><tr><td data-layer="layer__29"><img src="legend/_29.png" /></td><td data-layer="layer__29">Сбор отходов</td></tr><tr><td data-layer="layer__28"><img src="legend/_28.png" /></td><td data-layer="layer__28">Фармацевтика</td></tr><tr><td data-layer="layer__27"><img src="legend/_27.png" /></td><td data-layer="layer__27">Химическая промышленность</td></tr><tr><td data-layer="layer__26"><img src="legend/_26.png" /></td><td data-layer="layer__26">Энергетика</td></tr></table>
             </div>
             <div class="legend-section"><div class="legend-section-title">Гидрография</div>
                 <div class="legend-item" data-layer="layer__6,layer__7"><img src="legend/_7.png" class="legend-img" /><span class="legend-text">Реки</span></div>
@@ -865,8 +900,51 @@ var layer__12_airport = L.geoJson(json__12, {
         setTimeout(function() {
             try {
                 var enterprises = [];
-                if (layer__24) {
-                    layer__24.eachLayer(function(layer) {
+                // Собираем предприятия из разделённых слоёв промышленных объектов
+                if (layer__24_industrial) {
+                    layer__24_industrial.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties) {
+                            var props = layer.feature.properties;
+                            var name = props.name || props.NAME || props['название'] || props.title || null;
+                            var landuse = props.landuse || '';
+                            var typeText = landuse === 'industrial' ? 'Промышленная зона' : (landuse === 'quarry' ? 'Карьер' : (landuse === 'landfill' ? 'Полигон отходов' : landuse));
+                            if (!name && typeText !== 'undefined' && typeText !== '') {
+                                try {
+                                    var center = layer.getBounds().getCenter();
+                                    name = typeText + ' (' + center.lat.toFixed(4) + ', ' + center.lng.toFixed(4) + ')';
+                                } catch(e) { name = typeText; }
+                            }
+                            if (name && name !== 'undefined') {
+                                var centerPoint = null;
+                                try { centerPoint = layer.getBounds().getCenter(); } catch(e) { if (layer.getLatLng) centerPoint = layer.getLatLng(); }
+                                enterprises.push({ name: name, type: typeText, layer: layer, center: centerPoint });
+                            }
+                        }
+                    });
+                }
+                if (layer__24_quarry) {
+                    layer__24_quarry.eachLayer(function(layer) {
+                        if (layer.feature && layer.feature.properties) {
+                            var props = layer.feature.properties;
+                            var name = props.name || props.NAME || props['название'] || props.title || null;
+                            var landuse = props.landuse || '';
+                            var typeText = landuse === 'industrial' ? 'Промышленная зона' : (landuse === 'quarry' ? 'Карьер' : (landuse === 'landfill' ? 'Полигон отходов' : landuse));
+                            if (!name && typeText !== 'undefined' && typeText !== '') {
+                                try {
+                                    var center = layer.getBounds().getCenter();
+                                    name = typeText + ' (' + center.lat.toFixed(4) + ', ' + center.lng.toFixed(4) + ')';
+                                } catch(e) { name = typeText; }
+                            }
+                            if (name && name !== 'undefined') {
+                                var centerPoint = null;
+                                try { centerPoint = layer.getBounds().getCenter(); } catch(e) { if (layer.getLatLng) centerPoint = layer.getLatLng(); }
+                                enterprises.push({ name: name, type: typeText, layer: layer, center: centerPoint });
+                            }
+                        }
+                    });
+                }
+                if (layer__24_landfill) {
+                    layer__24_landfill.eachLayer(function(layer) {
                         if (layer.feature && layer.feature.properties) {
                             var props = layer.feature.properties;
                             var name = props.name || props.NAME || props['название'] || props.title || null;
@@ -918,7 +996,7 @@ var layer__12_airport = L.geoJson(json__12, {
             function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, function(m){ return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'; }); }
         }, 500);
         
-        // ========== ПОДПИСИ (ТУЛТИПЫ) - ВОТ ОНИ! ==========
+        // ========== ПОДПИСИ (ТУЛТИПЫ) ==========
         setTimeout(function() {
             try {
                 if (typeof layer_1000_20 !== 'undefined' && layer_1000_20) {
@@ -965,25 +1043,25 @@ var layer__12_airport = L.geoJson(json__12, {
         
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && fixedPopup) { map.closePopup(fixedPopup); fixedPopup = null; } });
         // Добавляем отдельные слои для населённых пунктов
-if (typeof layer__12_residential !== 'undefined') {
-    map.addLayer(layer__12_residential);
-    map.addLayer(layer__12_commercial);
-    map.addLayer(layer__12_industrial);
-    map.addLayer(layer__12_cemetery);
-    map.addLayer(layer__12_airport);
-    
-    bounds_group.addLayer(layer__12_residential);
-    bounds_group.addLayer(layer__12_commercial);
-    bounds_group.addLayer(layer__12_industrial);
-    bounds_group.addLayer(layer__12_cemetery);
-    bounds_group.addLayer(layer__12_airport);
-    
-    layerVisibility['layer__12_residential'] = true;
-    layerVisibility['layer__12_commercial'] = true;
-    layerVisibility['layer__12_industrial'] = true;
-    layerVisibility['layer__12_cemetery'] = true;
-    layerVisibility['layer__12_airport'] = true;
-}
+        if (typeof layer__12_residential !== 'undefined') {
+            map.addLayer(layer__12_residential);
+            map.addLayer(layer__12_commercial);
+            map.addLayer(layer__12_industrial);
+            map.addLayer(layer__12_cemetery);
+            map.addLayer(layer__12_airport);
+            
+            bounds_group.addLayer(layer__12_residential);
+            bounds_group.addLayer(layer__12_commercial);
+            bounds_group.addLayer(layer__12_industrial);
+            bounds_group.addLayer(layer__12_cemetery);
+            bounds_group.addLayer(layer__12_airport);
+            
+            layerVisibility['layer__12_residential'] = true;
+            layerVisibility['layer__12_commercial'] = true;
+            layerVisibility['layer__12_industrial'] = true;
+            layerVisibility['layer__12_cemetery'] = true;
+            layerVisibility['layer__12_airport'] = true;
+        }
         setBounds();
         </script>
     </body>
