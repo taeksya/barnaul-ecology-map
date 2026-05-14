@@ -324,7 +324,7 @@
                     font-size: 13px;
                 }
             }
-            /* УВЕЛИЧЕННЫЕ СТИЛИ ДЛЯ ПОДПИСЕЙ */
+           
             .css_1000_18 { font-family: 'P152', sans-serif; font-weight: bold; font-size: 12pt; color: #1a1a1a; text-shadow: 1px 1px 0 white; }
             .css_1000_19 { font-family: 'T132', sans-serif; font-weight: bold; font-size: 10pt; color: #1a1a1a; text-shadow: 1px 1px 0 white; }
             .css__20 { font-family: 'D432', sans-serif; font-style: italic; font-size: 12pt; color: #2c3e50; text-shadow: 1px 1px 0 white; font-weight: bold; }
@@ -345,7 +345,7 @@
         <div id="map"></div>
 
         <script>
-        // Игнорируем ошибки source map
+        
         window.addEventListener('error', function(e) {
             if (e.message && (e.message.includes('source map') || e.message.includes('L.Mixin.Events'))) {
                 e.preventDefault();
@@ -426,7 +426,7 @@
         var allLayers = {};
         var layerVisibility = {};
         
-        // ========== СОЗДАНИЕ КАРТЫ ==========
+        
         map = L.map('map', { zoomControl: false, maxZoom: 20, minZoom: 1 });
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
@@ -435,7 +435,7 @@
         var bounds_group = new L.featureGroup([]);
         function setBounds() { if (bounds_group.getLayers().length) { map.fitBounds(bounds_group.getBounds()); } }
         
-        // ========== ПАНЕЛИ (PANE) ==========
+       
         for (var i = 0; i <= 40; i++) { 
             map.createPane('pane__' + i); 
             if (map.getPane('pane__' + i)) { 
@@ -444,13 +444,13 @@
             } 
         }
         
-        // ========== ПАТТЕРНЫ ==========
+        
         var pattern__5_0 = new L.StripePattern({ weight: 0.6, spaceWeight: 5.0, color: '#fddc43', opacity: 1.0, spaceOpacity: 0, angle: 315 });
         pattern__5_0.addTo(map);
         var pattern__14_0 = new L.StripePattern({ weight: 0.3, spaceWeight: 2.0, color: '#860e00', opacity: 1.0, spaceOpacity: 0, angle: 225 });
         pattern__14_0.addTo(map);
         
-        // ========== ФУНКЦИИ ПОПАПОВ ==========
+        
         function createBeautifulPopup(feature, layerName) {
             var popupContent = '<div class="custom-popup-content">';
             var popupTitle = 'Информация об объекте';
@@ -586,7 +586,7 @@
         function pop__38(f,l) { bindPopupEvents(l,f,'layer__38'); }
         function pop__39(f,l) { bindPopupEvents(l,f,'layer__39'); }
 
-        // ========== СТИЛИ ==========
+        
         function style__0_0() { return { pane: 'pane__0', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(168,209,155,1.0)', interactive: true }; }
         function style__1_0() { return { pane: 'pane__1', opacity: 1, color: 'rgba(35,35,35,0.0)', dashArray: '', lineCap: 'butt', lineJoin: 'miter', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(232,228,173,1.0)', interactive: true }; }
         function style__2_0() { return { pane: 'pane__2', opacity: 1, color: 'rgba(185,158,129,1.0)', dashArray: '4.0,2.0', lineCap: 'square', lineJoin: 'bevel', weight: 1.0, fillOpacity: 0, interactive: true }; }
@@ -651,7 +651,7 @@
         function style__38_0() { return { pane: 'pane__38', opacity: 1, color: 'rgba(180,105,148,1.0)', dashArray: '8.0,4.0', lineCap: 'square', lineJoin: 'bevel', weight: 2.0, fillOpacity: 0, interactive: true }; }
         function style__39_0() { return { pane: 'pane__39', opacity: 1, color: 'rgba(207,69,94,1.0)', dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 3.0, fillOpacity: 0, interactive: true }; }
 
-        // ========== СОЗДАНИЕ СЛОЁВ ==========
+        
         var layer__0 = new L.geoJson(json__0, { interactive: true, dataVar: 'json__0', layerName: 'layer__0', pane: 'pane__0', onEachFeature: pop__0, style: style__0_0 });
         var layer__1 = new L.geoJson(json__1, { interactive: true, dataVar: 'json__1', layerName: 'layer__1', pane: 'pane__1', onEachFeature: pop__1, style: style__1_0 });
         var layer__2 = new L.geoJson(json__2, { interactive: true, dataVar: 'json__2', layerName: 'layer__2', pane: 'pane__2', onEachFeature: pop__2, style: style__2_0 });
@@ -677,7 +677,7 @@
         var layer__22 = new L.geoJson(json__22, { interactive: true, dataVar: 'json__22', layerName: 'layer__22', pane: 'pane__22', onEachFeature: pop__22, pointToLayer: function(f, ll) { return L.circleMarker(ll, style__22_0()); } });
         var layer__23 = new L.geoJson(json__23, { interactive: true, dataVar: 'json__23', layerName: 'layer__23', pane: 'pane__23', onEachFeature: pop__23, pointToLayer: function(f, ll) { return L.circleMarker(ll, style__23_0()); } });
         
-        // РАЗДЕЛЁННЫЕ СЛОИ ДЛЯ ПРОМЫШЛЕННЫХ ОБЪЕКТОВ (вместо одного layer__24)
+        
         var layer__24_industrial = L.geoJson(json__24, {
             interactive: true,
             layerName: 'layer__24_industrial',
@@ -727,7 +727,7 @@
         var layer__38 = new L.geoJson(json__38, { interactive: true, dataVar: 'json__38', layerName: 'layer__38', pane: 'pane__38', onEachFeature: pop__38, style: style__38_0 });
         var layer__39 = new L.geoJson(json__39, { interactive: true, dataVar: 'json__39', layerName: 'layer__39', pane: 'pane__39', onEachFeature: pop__39, style: style__39_0 });
         
-        // Отдельные слои для каждого типа населённых пунктов (фильтруем по landuse)
+        
         var layer__12_residential = L.geoJson(json__12, {
             interactive: true,
             layerName: 'layer__12_residential',
@@ -783,11 +783,11 @@
             style: style__12_0
         });
 
-        // Кластеры
+        
         var cluster__25 = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 2 });
         cluster__25.addLayer(layer__25);
         
-        // Сохраняем слои (включая разделённые промышленные)
+        
         allLayers = {
             'layer__0': layer__0, 'layer__1': layer__1, 'layer__2': layer__2, 'layer__3': layer__3, 'layer__4': layer__4,
             'layer__5': layer__5, 'layer__6': layer__6, 'layer__7': layer__7, 'layer__8': layer__8, 'layer__9': layer__9,
@@ -805,7 +805,7 @@
             'layer__39': layer__39, 'cluster__25': cluster__25
         };
         
-        // Добавляем на карту
+        
         for (var key in allLayers) {
             if (allLayers[key]) {
                 bounds_group.addLayer(allLayers[key]);
@@ -815,7 +815,7 @@
             }
         }
         
-        // Функция переключения слоёв
+        
         function toggleLayer(layerName, layerObj) {
             if (!layerObj) return;
             if (layerVisibility[layerName]) {
@@ -829,7 +829,7 @@
             }
         }
         
-        // ========== ЛЕГЕНДА (обновлена для разделённых слоёв) ==========
+       
         var legendHTML = `
             <div class="legend-title">Легенда карты</div>
             <div class="legend-section"><div class="legend-section-title">Земли промышленных объектов</div>
@@ -878,7 +878,7 @@
         
         document.getElementById('legendContainer').innerHTML = legendHTML;
         
-        // Обработчики легенды
+        
         document.querySelectorAll('.legend-item[data-layer]').forEach(function(item) {
             item.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -896,11 +896,11 @@
             });
         });
         
-        // ========== ПАНЕЛЬ ПРЕДПРИЯТИЙ ==========
+        
         setTimeout(function() {
             try {
                 var enterprises = [];
-                // Собираем предприятия из разделённых слоёв промышленных объектов
+                
                 if (layer__24_industrial) {
                     layer__24_industrial.eachLayer(function(layer) {
                         if (layer.feature && layer.feature.properties) {
@@ -996,7 +996,7 @@
             function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, function(m){ return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'; }); }
         }, 500);
         
-        // ========== ПОДПИСИ (ТУЛТИПЫ) ==========
+       
         setTimeout(function() {
             try {
                 if (typeof layer_1000_20 !== 'undefined' && layer_1000_20) {
@@ -1031,7 +1031,7 @@
             } catch(e) { console.warn("Ошибка подписей:", e); }
         }, 600);
         
-        // Стабилизация карты
+        
         map.on('click', function(e) {
             if (fixedPopup && e.originalEvent && !e.originalEvent.target.closest('.leaflet-popup')) { 
                 map.closePopup(fixedPopup); fixedPopup = null; 
@@ -1042,7 +1042,7 @@
         });
         
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && fixedPopup) { map.closePopup(fixedPopup); fixedPopup = null; } });
-        // Добавляем отдельные слои для населённых пунктов
+        
         if (typeof layer__12_residential !== 'undefined') {
             map.addLayer(layer__12_residential);
             map.addLayer(layer__12_commercial);
