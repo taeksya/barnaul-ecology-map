@@ -22,15 +22,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.4283557"
-     inkscape:cx="490.77411"
-     inkscape:cy="374.55656"
+     inkscape:zoom="0.505"
+     inkscape:cx="578.21782"
+     inkscape:cy="433.66337"
      inkscape:window-width="1712"
-     inkscape:window-height="965"
+     inkscape:window-height="961"
      inkscape:window-x="0"
      inkscape:window-y="39"
      inkscape:window-maximized="1"
-     inkscape:current-layer="Карта 1: Растительность"
+     inkscape:current-layer="g3"
      showgrid="false"><inkscape:grid
        id="grid3888"
        units="mm"
@@ -28613,8 +28613,7 @@
      id="g3888"
      stroke-linejoin="bevel"
      fill="none"
-     style="display:inline"
-     sodipodi:insensitive="true"><g
+     style="display:inline"><g
        stroke="#000000"
        font-size="54.1667px"
        font-style="normal"
@@ -28886,7 +28885,7 @@
          stroke-width="1"
          stroke-linecap="square"
          stroke-linejoin="bevel"
-         transform="matrix(0.999751,0,0,0.999751,2742.1704,436.29733)"
+         transform="matrix(0.999751,0,0,0.999751,2742.1704,477.86617)"
          fill="none"
          id="g3698"><text
            stroke="none"
@@ -28899,7 +28898,7 @@
            font-family="'Avenir Next'"
            fill-opacity="1"
            fill="#000000"
-           id="text3697">Отходы</text></g><g
+           id="text3697">Полигоны ТБО</text></g><g
          stroke="#000000"
          font-size="24px"
          font-style="normal"
@@ -28909,7 +28908,7 @@
          stroke-width="1"
          stroke-linecap="square"
          stroke-linejoin="bevel"
-         transform="matrix(0.999751,0,0,0.999751,2741.2586,478.28733)"
+         transform="matrix(0.999751,0,0,0.999751,2741.2586,436.71849)"
          fill="none"
          id="g3704"><text
            stroke="none"
@@ -28922,7 +28921,7 @@
            font-family="'Avenir Next'"
            fill-opacity="1"
            fill="#000000"
-           id="text3703">Карьер</text></g></g><g
+           id="text3703">Места добычи полезных ископаемых</text></g></g><g
        stroke="#000000"
        font-size="54.1667px"
        font-style="normal"
@@ -29108,7 +29107,7 @@
        stroke-linecap="square"
        fill-opacity="1"
        stroke-linejoin="bevel"
-       transform="matrix(0.999751,0,0,0.999751,2448.0741,524.84947)"
+       transform="matrix(0.999751,0,0,0.999751,2448.0741,566.41831)"
        fill="#b6c3f0"
        id="g3695"><path
          vector-effect="none"
@@ -29125,7 +29124,7 @@
        stroke-linecap="square"
        fill-opacity="1"
        stroke-linejoin="bevel"
-       transform="matrix(0.999751,0,0,0.999751,2448.0741,566.17947)"
+       transform="matrix(0.999751,0,0,0.999751,2448.0741,524.61063)"
        fill="#935f54"
        id="g3701"><path
          vector-effect="none"
